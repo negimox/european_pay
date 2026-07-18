@@ -17,10 +17,22 @@ import {
   DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 
-export function TopNav() {
+interface TopNavProps {
+  user?: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  } | null;
+}
+
+export function TopNav({ user }: TopNavProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobileSearch, setIsMobileSearch] = useState(false);
+
+  const userName = user ? `${user.firstName} ${user.lastName}` : "Student";
+  const userInitials = user ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase() : "S";
+  const userEmail = user?.email || "student@example.com";
 
   const handleLogout = async () => {
     try {
@@ -126,7 +138,7 @@ export function TopNav() {
               <DropdownMenuTrigger className="relative h-10 w-10 rounded-full shrink-0 outline-none flex items-center justify-center focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                 <Avatar className="h-10 w-10 border-2 border-surface cursor-pointer">
                   <AvatarFallback className="bg-primary/10 text-primary font-medium">
-                    S
+                    {userInitials}
                   </AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
@@ -134,15 +146,15 @@ export function TopNav() {
                 <DropdownMenuGroup>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">Student</p>
+                      <p className="text-sm font-medium leading-none">{userName}</p>
                       <p className="text-xs leading-none text-muted-foreground">
-                        student@example.com
+                        {userEmail}
                       </p>
                     </div>
                   </DropdownMenuLabel>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => router.push("/settings")} className="cursor-pointer">
+                <DropdownMenuItem onClick={() => router.push("/dashboard/settings")} className="cursor-pointer">
                   <span className="material-symbols-outlined mr-2 text-[18px]">settings</span>
                   Settings
                 </DropdownMenuItem>

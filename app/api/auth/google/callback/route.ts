@@ -57,7 +57,7 @@ export async function GET(request: Request) {
     }
 
     const userData = await userRes.json();
-    const { email, name, picture } = userData;
+    const { email, given_name, family_name, name, picture } = userData;
 
     if (!email) {
       return NextResponse.redirect(new URL("/login?error=Google+account+missing+email", request.url));
@@ -70,7 +70,8 @@ export async function GET(request: Request) {
       user = await prisma.user.create({
         data: {
           email,
-          name: name || email.split("@")[0],
+          firstName: given_name || name?.split(" ")[0] || email.split("@")[0],
+          lastName: family_name || name?.split(" ").slice(1).join(" ") || "",
           avatarUrl: picture,
           role: Role.STUDENT,
         },

@@ -22,7 +22,8 @@ async function main() {
     const passwordHash = await bcrypt.hash("Admin@1234", 12);
     const admin = await prisma.user.create({
       data: {
-        name: "Campus Admin",
+        firstName: "Campus",
+        lastName: "Admin",
         email: adminEmail,
         passwordHash,
         role: Role.ADMIN,
@@ -45,7 +46,8 @@ async function main() {
     const passwordHash = await bcrypt.hash("Student@1234", 12);
     const student = await prisma.user.create({
       data: {
-        name: "Demo Student",
+        firstName: "Demo",
+        lastName: "Student",
         email: studentEmail,
         passwordHash,
         role: Role.STUDENT,

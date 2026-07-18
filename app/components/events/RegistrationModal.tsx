@@ -29,7 +29,8 @@ export default function RegistrationModal({
 
   // Prefilled from /api/user/me — locked, user cannot edit
   const [userProfile, setUserProfile] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
   });
 
@@ -47,7 +48,8 @@ export default function RegistrationModal({
         if (res.ok) {
           const data = await res.json();
           setUserProfile({
-            name: data.user.name ?? "",
+            firstName: data.user.firstName ?? "",
+            lastName: data.user.lastName ?? "",
             email: data.user.email ?? "",
           });
         }
@@ -217,18 +219,41 @@ export default function RegistrationModal({
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-                {/* Full Name */}
+                {/* First Name */}
                 <div>
                   <label
                     className="block font-label-md text-label-md text-on-surface-variant mb-xs"
-                    htmlFor="name"
+                    htmlFor="firstName"
                   >
-                    Full Name
+                    First Name
                   </label>
                   <div className="relative">
                     <Input
-                      id="name"
-                      value={userLoading ? "" : userProfile.name}
+                      id="firstName"
+                      value={userLoading ? "" : userProfile.firstName}
+                      readOnly
+                      disabled
+                      placeholder={userLoading ? "Loading…" : ""}
+                      className="pr-9 bg-surface-container-low text-on-surface-variant cursor-not-allowed select-none"
+                    />
+                    <span className="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-[16px] text-on-surface-variant/50">
+                      lock
+                    </span>
+                  </div>
+                </div>
+
+                {/* Last Name */}
+                <div>
+                  <label
+                    className="block font-label-md text-label-md text-on-surface-variant mb-xs"
+                    htmlFor="lastName"
+                  >
+                    Last Name
+                  </label>
+                  <div className="relative">
+                    <Input
+                      id="lastName"
+                      value={userLoading ? "" : userProfile.lastName}
                       readOnly
                       disabled
                       placeholder={userLoading ? "Loading…" : ""}
@@ -241,7 +266,7 @@ export default function RegistrationModal({
                 </div>
 
                 {/* Email */}
-                <div>
+                <div className="md:col-span-2">
                   <label
                     className="block font-label-md text-label-md text-on-surface-variant mb-xs"
                     htmlFor="email"

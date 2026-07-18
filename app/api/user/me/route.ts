@@ -13,7 +13,8 @@ export async function GET() {
       where: { id: session.userId },
       select: {
         id: true,
-        name: true,
+        firstName: true,
+        lastName: true,
         email: true,
         role: true,
         avatarUrl: true,

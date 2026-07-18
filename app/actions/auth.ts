@@ -10,10 +10,14 @@ import { Role } from "@prisma/client";
 // ─── Validation Schemas ───────────────────────────────────────────────────────
 
 const signUpSchema = z.object({
-  name: z
+  firstName: z
     .string()
-    .min(2, "Name must be at least 2 characters")
-    .max(100, "Name too long"),
+    .min(2, "First name must be at least 2 characters")
+    .max(50, "First name too long"),
+  lastName: z
+    .string()
+    .min(2, "Last name must be at least 2 characters")
+    .max(50, "Last name too long"),
   email: z.string().email("Invalid email address").toLowerCase(),
   password: z
     .string()
@@ -40,8 +44,8 @@ export async function signUp(
   formData: FormData
 ): Promise<AuthActionState> {
   const raw = {
-    name: (formData.get("name") as string) ||
-      `${formData.get("firstName") ?? ""} ${formData.get("lastName") ?? ""}`.trim(),
+    firstName: formData.get("firstName"),
+    lastName: formData.get("lastName"),
     email: formData.get("email"),
     password: formData.get("password"),
   };
@@ -51,7 +55,7 @@ export async function signUp(
     return { fieldErrors: parsed.error.flatten().fieldErrors };
   }
 
-  const { name, email, password } = parsed.data;
+  const { firstName, lastName, email, password } = parsed.data;
 
   // Check for duplicate email
   const existing = await prisma.user.findUnique({ where: { email } });
@@ -62,7 +66,7 @@ export async function signUp(
   const passwordHash = await hashPassword(password);
 
   const user = await prisma.user.create({
-    data: { name, email, passwordHash, role: Role.STUDENT },
+    data: { firstName, lastName, email, passwordHash, role: Role.STUDENT },
   });
 
   await createSession(user.id, user.role);

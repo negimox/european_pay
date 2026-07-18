@@ -29,10 +29,10 @@ export default function LoginPage() {
                 UniEvent
               </span>
             </div>
-            <h1 className="font-display-lg text-display-lg text-on-surface max-w-lg">
+            <h1 className="font-display-lg text-display-lg text-on-surface max-w-[512px]">
               Connect with your campus community.
             </h1>
-            <p className="font-body-lg text-body-lg text-on-surface-variant mt-[24px] max-w-md">
+            <p className="font-body-lg text-body-lg text-on-surface-variant mt-[24px] max-w-[448px]">
               Access events, clubs, and resources all in one place. Stay in the
               pulse of university life.
             </p>
@@ -61,7 +61,7 @@ export default function LoginPage() {
                 width={28}
                 height={28}
               />
-              <span className="font-headline-md text-headline-md text-primary">
+              <span className="font-headline-sm text-headline-md text-primary">
                 UniEvent
               </span>
             </div>

@@ -36,12 +36,12 @@ export default function AnnouncementsPage() {
       >
         <Link
           href="/dashboard"
-          className="hover:text-primary transition-colors"
+          className="hover:text-primary transition-color font-display-md"
         >
           Dashboard
         </Link>
         <span className="material-symbols-outlined text-sm">chevron_right</span>
-        <span className="text-on-surface font-medium truncate">
+        <span className="font-display-md text-on-surface truncate">
           Announcements
         </span>
       </nav>
