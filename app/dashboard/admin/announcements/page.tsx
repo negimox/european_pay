@@ -96,8 +96,8 @@ export default function AdminAnnouncementsPage() {
         </div>
         
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>Create Announcement</Button>
+          <DialogTrigger render={<Button />}>
+            Create Announcement
           </DialogTrigger>
           <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
