@@ -16,8 +16,9 @@ const signUpSchema = z.object({
     .max(50, "First name too long"),
   lastName: z
     .string()
-    .min(2, "Last name must be at least 2 characters")
-    .max(50, "Last name too long"),
+    .max(50, "Last name too long")
+    .optional()
+    .or(z.literal("")),
   email: z.string().email("Invalid email address").toLowerCase(),
   password: z
     .string()
@@ -66,7 +67,13 @@ export async function signUp(
   const passwordHash = await hashPassword(password);
 
   const user = await prisma.user.create({
-    data: { firstName, lastName, email, passwordHash, role: Role.STUDENT },
+    data: { 
+      firstName, 
+      lastName: lastName ? lastName : null, 
+      email, 
+      passwordHash, 
+      role: Role.STUDENT 
+    },
   });
 
   await createSession(user.id, user.role);

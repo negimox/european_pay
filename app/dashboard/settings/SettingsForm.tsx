@@ -12,7 +12,7 @@ export function SettingsForm({
   email
 }: { 
   initialFirstName: string; 
-  initialLastName: string;
+  initialLastName: string | null;
   email: string;
 }) {
   const [state, formAction, pending] = useActionState<UpdateProfileState, FormData>(
@@ -55,8 +55,7 @@ export function SettingsForm({
           <Input
             id="lastName"
             name="lastName"
-            defaultValue={initialLastName}
-            required
+            defaultValue={initialLastName || ""}
             disabled={pending}
             className="w-full bg-surface-bright border-outline-variant text-on-surface"
           />

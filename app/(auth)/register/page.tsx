@@ -128,7 +128,6 @@ export default function RegisterPage() {
                       id="lastName"
                       name="lastName"
                       placeholder="Doe"
-                      required
                       type="text"
                     />
                   </div>

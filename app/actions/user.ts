@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 
 const updateProfileSchema = z.object({
   firstName: z.string().min(1, "First name is required").max(50, "First name too long"),
-  lastName: z.string().min(1, "Last name is required").max(50, "Last name too long"),
+  lastName: z.string().max(50, "Last name too long").optional().or(z.literal("")),
 });
 
 export interface UpdateProfileState {
@@ -42,7 +42,7 @@ export async function updateProfile(
       where: { id: session.userId },
       data: { 
         firstName: firstName.trim(), 
-        lastName: lastName.trim() 
+        lastName: lastName ? lastName.trim() : null 
       },
     });
     

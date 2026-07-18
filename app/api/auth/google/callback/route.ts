@@ -71,7 +71,7 @@ export async function GET(request: Request) {
         data: {
           email,
           firstName: given_name || name?.split(" ")[0] || email.split("@")[0],
-          lastName: family_name || name?.split(" ").slice(1).join(" ") || "",
+          lastName: family_name || name?.split(" ").slice(1).join(" ") || null,
           avatarUrl: picture,
           role: Role.STUDENT,
         },

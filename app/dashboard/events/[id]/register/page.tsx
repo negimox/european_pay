@@ -62,7 +62,7 @@ export default function RegisterEventPage({
         .then((data) => {
           if (data.user) {
             setUserProfile({
-              name: data.user.name ?? "",
+              name: `${data.user.firstName}${data.user.lastName ? ` ${data.user.lastName}` : ""}`,
               email: data.user.email ?? "",
             });
           }

@@ -20,7 +20,7 @@ import {
 interface TopNavProps {
   user?: {
     firstName: string;
-    lastName: string;
+    lastName: string | null;
     email: string;
   } | null;
 }
@@ -30,8 +30,8 @@ export function TopNav({ user }: TopNavProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobileSearch, setIsMobileSearch] = useState(false);
 
-  const userName = user ? `${user.firstName} ${user.lastName}` : "Student";
-  const userInitials = user ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase() : "S";
+  const userName = user ? `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}` : "Student";
+  const userInitials = user ? `${user.firstName[0]}${user.lastName ? user.lastName[0] : ""}`.toUpperCase() : "S";
   const userEmail = user?.email || "student@example.com";
 
   const handleLogout = async () => {
