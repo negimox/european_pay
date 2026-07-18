@@ -102,14 +102,6 @@ export function TopNav() {
               <span className="material-symbols-outlined">search</span>
             </Button>
 
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full text-secondary hover:bg-surface-container shrink-0"
-            >
-              <span className="material-symbols-outlined">notifications</span>
-            </Button>
-
             <div className="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border-2 border-surface cursor-pointer shrink-0">
               <Image
                 src="/web-app-manifest-512x512.png"

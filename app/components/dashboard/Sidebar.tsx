@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   Sidebar,
@@ -36,14 +37,24 @@ export function AppSidebar() {
   return (
     <Sidebar className="bg-surface-container-low border-r border-outline-variant">
       <SidebarHeader className="p-md">
-        <div className="mb-sm mt-2 px-2">
-          <h1 className="font-headline-md text-headline-md font-bold text-primary">
-            UniEvent
-          </h1>
-          <p className="font-label-sm text-label-sm text-on-surface-variant mt-xs">
-            Student Portal
-          </p>
-        </div>
+        <Link
+          href="/dashboard"
+          prefetch={false}
+          className="mb-sm mt-2 px-2 block group select-none"
+        >
+          <div className="flex items-center gap-2">
+            <Image
+              src="/web-app-manifest-512x512.png"
+              alt="UniEvent Logo"
+              width={28}
+              height={28}
+              className="pointer-events-none"
+            />
+            <h1 className="font-headline-sm text-headline-md font-bold text-primary group-hover:text-primary/80 transition-colors">
+              UniEvent
+            </h1>
+          </div>
+        </Link>
       </SidebarHeader>
 
       <SidebarContent>
@@ -58,6 +69,7 @@ export function AppSidebar() {
                   >
                     <Link
                       href={item.href}
+                      prefetch={false}
                       className="flex items-center gap-3 px-4 py-3 w-full h-full"
                     >
                       <span className="material-symbols-outlined text-[22px] shrink-0">
@@ -77,6 +89,7 @@ export function AppSidebar() {
         <div className="px-4 py-2 mt-2">
           <Link
             href="/admin"
+            prefetch={false}
             className="bg-primary text-on-primary font-label-md text-label-md py-sm px-md rounded-lg hover:shadow-md transition-all duration-200 w-full text-center block"
           >
             Create Event
@@ -93,6 +106,7 @@ export function AppSidebar() {
             >
               <Link
                 href="/settings"
+                prefetch={false}
                 className="flex items-center gap-3 px-4 py-3 w-full h-full text-on-surface-variant"
               >
                 <span className="material-symbols-outlined text-[22px] shrink-0">

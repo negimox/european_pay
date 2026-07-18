@@ -15,7 +15,13 @@ export async function GET() {
         status: "ACTIVE",
       },
       include: {
-        event: true,
+        event: {
+          include: {
+            _count: {
+              select: { registrations: true },
+            },
+          },
+        },
       },
       orderBy: {
         registeredAt: "desc",

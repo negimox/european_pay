@@ -58,6 +58,13 @@ function SearchResultsContent() {
 
   return (
     <div className="p-margin-mobile md:p-margin-desktop bg-surface-bright flex-1">
+      {/* Breadcrumbs */}
+      <nav aria-label="Breadcrumb" className="flex items-center gap-xs font-label-md text-label-md text-on-surface-variant mb-lg">
+        <Link href="/dashboard" className="hover:text-primary transition-colors">Dashboard</Link>
+        <span className="material-symbols-outlined text-sm">chevron_right</span>
+        <span className="text-on-surface font-medium truncate">Search</span>
+      </nav>
+
       <div className="mb-lg">
         <h2 className="font-headline-lg text-headline-lg lg:text-display-lg text-on-surface font-bold">Search Results</h2>
         <p className="font-body-lg text-body-lg text-on-surface-variant mt-sm">
@@ -127,13 +134,9 @@ function SearchResultsContent() {
                 filteredEvents.map(event => (
                   <Card key={event.id} onClick={() => router.push(`/dashboard/events/${event.id}`)} className="bg-surface-container-lowest border-outline-variant rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col group cursor-pointer p-0">
                     <div className="h-40 overflow-hidden relative bg-surface-container flex items-center justify-center">
-                      {event.imageUrl ? (
-                        <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      ) : (
-                        <span className="material-symbols-outlined text-[64px] text-outline-variant">event</span>
-                      )}
+                      <img src={event.bannerUrl || "/events/1.jpg"} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       <Badge variant="secondary" className="absolute top-sm right-sm bg-surface-container-lowest/90 backdrop-blur-sm font-label-sm text-label-sm text-primary">
-                        {new Date(event.date).toLocaleDateString()}
+                        {new Date(event.startAt).toLocaleDateString()}
                       </Badge>
                     </div>
                     
