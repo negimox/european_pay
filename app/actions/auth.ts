@@ -40,7 +40,8 @@ export async function signUp(
   formData: FormData
 ): Promise<AuthActionState> {
   const raw = {
-    name: formData.get("name"),
+    name: (formData.get("name") as string) ||
+      `${formData.get("firstName") ?? ""} ${formData.get("lastName") ?? ""}`.trim(),
     email: formData.get("email"),
     password: formData.get("password"),
   };
@@ -88,8 +89,17 @@ export async function signIn(
 
   const user = await prisma.user.findUnique({ where: { email } });
 
+  if (!user) {
+    return { error: "Invalid email or password." };
+  }
+
+  // If user exists but has no password hash, they registered via SSO.
+  if (!user.passwordHash) {
+    return { error: "This account uses Google SSO. Please sign in with Google." };
+  }
+
   // Use constant-time comparison pattern — don't reveal whether user exists
-  if (!user || !(await verifyPassword(password, user.passwordHash))) {
+  if (!(await verifyPassword(password, user.passwordHash))) {
     return { error: "Invalid email or password." };
   }
 
