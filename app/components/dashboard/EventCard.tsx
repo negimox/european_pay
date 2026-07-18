@@ -38,12 +38,29 @@ export function EventCard({
     minute: "2-digit",
   });
 
+  const getRelativeTime = (dateStr: string) => {
+    const eventDate = new Date(dateStr);
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const target = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
+    
+    const diffTime = target.getTime() - today.getTime();
+    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) return "Today";
+    if (diffDays === 1) return "Tomorrow";
+    if (diffDays === -1) return "Yesterday";
+    if (diffDays > 1) return `In ${diffDays} days`;
+    if (diffDays < -1) return `${Math.abs(diffDays)} days ago`;
+    return "";
+  };
+
   const registrationsCount = event._count?.registrations || 0;
   const isFull = registrationsCount >= event.capacity;
   const availableSeats = event.capacity - registrationsCount;
 
   return (
-    <Card className="flex flex-col overflow-hidden transition-all hover:shadow-md border-outline-variant/30 bg-surface">
+    <Card className="flex flex-col overflow-hidden transition-all hover:shadow-md border-outline-variant/30 bg-surface select-none">
       <div className="relative w-full h-48 bg-surface-container-high">
         {event.bannerUrl ? (
           <Image
@@ -79,7 +96,7 @@ export function EventCard({
         <div className="space-y-3 font-body-sm text-body-sm text-on-surface-variant">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-[20px] text-primary">calendar_today</span>
-            <span>{date}</span>
+            <span>{date} <span className="font-medium text-primary">({getRelativeTime(event.startAt)})</span></span>
           </div>
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-[20px] text-primary">location_on</span>
@@ -98,7 +115,7 @@ export function EventCard({
         {isRegistered ? (
           <Button
             variant="destructive"
-            className="w-full font-label-lg"
+            className="w-full font-label-lg select-none"
             onClick={() => onCancel?.(event.id)}
             disabled={loading}
           >
@@ -106,7 +123,7 @@ export function EventCard({
           </Button>
         ) : (
           <Button
-            className="w-full font-label-lg"
+            className="w-full font-label-lg select-none"
             onClick={() => onRegister?.(event.id)}
             disabled={isFull || loading}
           >

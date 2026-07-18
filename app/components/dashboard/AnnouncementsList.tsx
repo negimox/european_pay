@@ -20,18 +20,16 @@ export function AnnouncementsList({
 }: AnnouncementsListProps) {
   return (
     <Card className="h-full border-outline-variant/30 bg-surface">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 font-headline-sm text-on-surface">
-          <span className="material-symbols-outlined text-primary">campaign</span>
-          Announcements
-        </CardTitle>
-      </CardHeader>
+      <CardHeader></CardHeader>
       <CardContent className="px-0 pb-0">
-        <ScrollArea className="h-[400px] px-6 pb-6">
+        <ScrollArea className="px-6 pb-6">
           {loading ? (
             <div className="space-y-4">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="animate-pulse flex flex-col gap-2 p-4 border border-outline-variant/20 rounded-lg">
+                <div
+                  key={i}
+                  className="animate-pulse flex flex-col gap-2 p-4 border border-outline-variant/20 rounded-lg"
+                >
                   <div className="h-5 bg-surface-container-high rounded w-3/4"></div>
                   <div className="h-4 bg-surface-container-high rounded w-full"></div>
                   <div className="h-4 bg-surface-container-high rounded w-1/2 mt-2"></div>
@@ -49,7 +47,9 @@ export function AnnouncementsList({
             <div className="space-y-4">
               {announcements.map((announcement, index) => (
                 <div key={announcement.id} className="flex flex-col gap-1">
-                  {index > 0 && <Separator className="my-4 bg-outline-variant/30" />}
+                  {index > 0 && (
+                    <Separator className="my-4 bg-outline-variant/30" />
+                  )}
                   <div className="flex items-center justify-between mb-1">
                     <h4 className="font-title-md text-title-md font-medium text-on-surface">
                       {announcement.title}

@@ -8,10 +8,10 @@ import { AuthAlert } from "@/app/components/auth/AuthAlert";
 import { LegalModal } from "@/app/components/auth/LegalModal";
 
 export default function RegisterPage() {
-  const [state, formAction, pending] = useActionState<AuthActionState, FormData>(
-    signUp,
-    {}
-  );
+  const [state, formAction, pending] = useActionState<
+    AuthActionState,
+    FormData
+  >(signUp, {});
 
   return (
     <div className="bg-surface text-on-surface font-body-md antialiased min-h-screen flex selection:bg-secondary-container selection:text-on-secondary-container">
@@ -23,23 +23,31 @@ export default function RegisterPage() {
             className="absolute inset-0 z-0 bg-cover bg-center"
             style={{
               backgroundImage:
-                'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDMvnOJROQCSy8BBr1Gafo8fSnIq4S1W8WVHfVkC8Qtnzp9RNRhRFfjbqfd6t53YnGh8kny8rkd-SoRNx8Gaqxnf6exfyp1YwQU8O-fFe2t8CB68YdnCTpWO4oHCaBkQrzybA-Mfjw8MnAnuStXlHLQkGjwF5hk1Y7yAn5saG28dFMoB9A3Vgt6xaD5ynIZqu8YCEwQFgsRrpsEsuO1fATGqDB8QlSB16Bw3CqNUfRD9OCNfQTdjBb2ug")'
+                'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDMvnOJROQCSy8BBr1Gafo8fSnIq4S1W8WVHfVkC8Qtnzp9RNRhRFfjbqfd6t53YnGh8kny8rkd-SoRNx8Gaqxnf6exfyp1YwQU8O-fFe2t8CB68YdnCTpWO4oHCaBkQrzybA-Mfjw8MnAnuStXlHLQkGjwF5hk1Y7yAn5saG28dFMoB9A3Vgt6xaD5ynIZqu8YCEwQFgsRrpsEsuO1fATGqDB8QlSB16Bw3CqNUfRD9OCNfQTdjBb2ug")',
             }}
           />
           {/* Gradient Overlay for text readability */}
           <div className="absolute inset-0 z-10 bg-gradient-to-t from-on-surface/80 via-on-surface/30 to-transparent"></div>
-          
+
           {/* Branding / Inspirational Text */}
           <div className="relative z-20 text-on-primary w-full max-w-lg">
             <div className="flex items-center gap-2 mb-[24px]">
-              <Image src="/web-app-manifest-512x512.png" alt="UniEvent Logo" width={36} height={36} />
-              <span className="font-headline-lg text-headline-lg font-bold tracking-tight">UniEvent</span>
+              <Image
+                src="/web-app-manifest-512x512.png"
+                alt="UniEvent Logo"
+                width={36}
+                height={36}
+              />
+              <span className="font-headline-lg text-headline-lg font-bold tracking-tight">
+                UniEvent
+              </span>
             </div>
             <h1 className="font-display-lg text-display-lg mb-4 text-white drop-shadow-sm">
               Join the vibrant campus ecosystem.
             </h1>
             <p className="font-body-lg text-body-lg text-white/90 drop-shadow-sm">
-              Connect with organizations, discover events, and manage your academic life in one modern platform.
+              Connect with organizations, discover events, and manage your
+              academic life in one modern platform.
             </p>
           </div>
         </div>
@@ -49,16 +57,25 @@ export default function RegisterPage() {
           <div className="w-full max-w-[480px] bg-surface rounded-lg sm:bg-white sm:shadow-[0_4px_24px_rgba(0,0,0,0.02)] sm:border sm:border-outline-variant/30 sm:p-8 transition-all duration-300">
             {/* Mobile Logo */}
             <div className="flex items-center justify-center gap-2 mb-8 lg:hidden text-primary">
-              <Image src="/web-app-manifest-512x512.png" alt="UniEvent Logo" width={32} height={32} />
-              <span className="font-headline-md text-headline-md font-bold">UniEvent</span>
+              <Image
+                src="/web-app-manifest-512x512.png"
+                alt="UniEvent Logo"
+                width={32}
+                height={32}
+              />
+              <span className="font-headline-sm text-headline-md font-bold">
+                UniEvent
+              </span>
             </div>
-            
+
             {/* Form Header */}
             <div className="mb-8 text-center sm:text-left">
               <h2 className="font-headline-lg-mobile sm:font-headline-lg text-headline-lg-mobile sm:text-headline-lg text-on-surface mb-2">
                 Create Student Account
               </h2>
-              <p className="font-body-md text-body-md text-on-surface-variant">Enter your details to get started.</p>
+              <p className="font-body-md text-body-md text-on-surface-variant">
+                Enter your details to get started.
+              </p>
             </div>
 
             <AuthAlert serverError={state?.error} />
@@ -67,7 +84,10 @@ export default function RegisterPage() {
             <form action={formAction} className="space-y-5">
               {/* Full Name */}
               <div>
-                <label className="block font-label-md text-label-md text-on-surface mb-[4px]" htmlFor="name">
+                <label
+                  className="block font-label-md text-label-md text-on-surface mb-[4px]"
+                  htmlFor="name"
+                >
                   Full Name
                 </label>
                 <div className="relative">
@@ -84,13 +104,18 @@ export default function RegisterPage() {
                   />
                 </div>
                 {state?.fieldErrors?.name && (
-                  <p className="mt-1 text-xs text-error">{state.fieldErrors.name[0]}</p>
+                  <p className="mt-1 text-xs text-error">
+                    {state.fieldErrors.name[0]}
+                  </p>
                 )}
               </div>
 
               {/* University Email */}
               <div>
-                <label className="block font-label-md text-label-md text-on-surface mb-[4px]" htmlFor="email">
+                <label
+                  className="block font-label-md text-label-md text-on-surface mb-[4px]"
+                  htmlFor="email"
+                >
                   University Email
                 </label>
                 <div className="relative">
@@ -107,13 +132,18 @@ export default function RegisterPage() {
                   />
                 </div>
                 {state?.fieldErrors?.email && (
-                  <p className="mt-1 text-xs text-error">{state.fieldErrors.email[0]}</p>
+                  <p className="mt-1 text-xs text-error">
+                    {state.fieldErrors.email[0]}
+                  </p>
                 )}
               </div>
 
               {/* Password */}
               <div>
-                <label className="block font-label-md text-label-md text-on-surface mb-[4px]" htmlFor="password">
+                <label
+                  className="block font-label-md text-label-md text-on-surface mb-[4px]"
+                  htmlFor="password"
+                >
                   Password
                 </label>
                 <div className="relative">
@@ -130,7 +160,9 @@ export default function RegisterPage() {
                   />
                 </div>
                 {state?.fieldErrors?.password && (
-                  <p className="mt-1 text-xs text-error">{state.fieldErrors.password[0]}</p>
+                  <p className="mt-1 text-xs text-error">
+                    {state.fieldErrors.password[0]}
+                  </p>
                 )}
               </div>
 
@@ -146,7 +178,10 @@ export default function RegisterPage() {
                   />
                 </div>
                 <div className="ml-3">
-                  <label className="font-body-md text-body-md text-on-surface-variant cursor-pointer" htmlFor="terms">
+                  <label
+                    className="font-body-md text-body-md text-on-surface-variant cursor-pointer"
+                    htmlFor="terms"
+                  >
                     I agree to the{" "}
                     <LegalModal
                       type="terms"
@@ -189,7 +224,9 @@ export default function RegisterPage() {
 
             <div className="flex items-center gap-[12px] my-[24px]">
               <div className="h-px bg-outline-variant flex-1"></div>
-              <span className="font-label-sm text-label-sm text-on-surface-variant">OR</span>
+              <span className="font-label-sm text-label-sm text-on-surface-variant">
+                OR
+              </span>
               <div className="h-px bg-outline-variant flex-1"></div>
             </div>
 
@@ -198,11 +235,29 @@ export default function RegisterPage() {
               href="/api/auth/google"
               className="w-full bg-transparent border border-primary text-primary font-label-md text-label-md py-3.5 rounded hover:bg-primary/5 transition-colors flex items-center justify-center gap-[12px]"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  fill="#4285F4"
+                />
+                <path
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  fill="#34A853"
+                />
+                <path
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                  fill="#FBBC05"
+                />
+                <path
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                  fill="#EA4335"
+                />
               </svg>
               Sign in with Google
             </a>

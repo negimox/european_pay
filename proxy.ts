@@ -15,6 +15,15 @@ const COOKIE_NAME = "campus_session";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Skip auth middleware for Next.js RSC prefetch requests.
+  // These are background requests fired by <Link> components to prefetch
+  // server component payloads. Running jwtVerify + redirect logic on them
+  // causes repeated DB queries for every visible Link in the viewport.
+  if (request.nextUrl.searchParams.has("_rsc")) {
+    return NextResponse.next();
+  }
+
   const token = request.cookies.get(COOKIE_NAME)?.value;
 
   // Verify the session token
@@ -72,6 +81,10 @@ export const config = {
      * - favicon.ico
      * - public directory files
      * - api routes (handled by route handlers themselves)
+     * - Next.js RSC prefetch requests (?_rsc=...) — these are background
+     *   prefetch fetches, not real navigations; running auth on them causes
+     *   the middleware + server component + DB query chain to fire on every
+     *   Link that's visible in the viewport.
      */
     "/((?!_next/static|_next/image|favicon.ico|public/|api/).*)",
   ],
