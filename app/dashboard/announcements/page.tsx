@@ -45,7 +45,7 @@ export default function AnnouncementsPage() {
           Announcements
         </span>
       </nav>
-      <h1 className="font-display-lg text-display-lg text-primary mb-6">
+      <h1 className="font-display-md text-display-lg text-primary mb-6">
         Announcements
       </h1>
       <AnnouncementsList

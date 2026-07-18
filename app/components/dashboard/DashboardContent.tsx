@@ -122,12 +122,14 @@ export function DashboardContent({
         <Link
           href="/dashboard"
           prefetch={false}
-          className="hover:text-primary transition-colors"
+          className="hover:text-primary transition-colors font-display-md"
         >
           Dashboard
         </Link>
         <span className="material-symbols-outlined text-sm">chevron_right</span>
-        <span className="text-on-surface font-medium truncate">Overview</span>
+        <span className="text-on-surface font-medium truncate font-display-md">
+          Overview
+        </span>
       </nav>
 
       {/* Greeting */}
