@@ -64,12 +64,12 @@ export default function RegistrationsPage() {
         </Link>
         <span className="material-symbols-outlined text-sm">chevron_right</span>
         <span className="text-on-surface font-medium truncate font-display-md">
-          My Registrations
+          My Events
         </span>
       </nav>
 
       <h1 className="font-display-lg text-display-lg text-primary mb-6">
-        My Registrations
+        My Events
       </h1>
       <MyRegistrationsList
         registrations={registrations}

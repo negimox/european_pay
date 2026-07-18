@@ -3,14 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export function MobileBottomNav() {
+export function MobileBottomNav({ role }: { role?: string }) {
   const pathname = usePathname();
 
   const navItems = [
     { name: "Home", href: "/dashboard", icon: "dashboard" },
     { name: "Events", href: "/dashboard/events", icon: "event" },
     {
-      name: "Tickets",
+      name: "My Events",
       href: "/dashboard/registrations",
       icon: "how_to_reg",
     },
@@ -19,13 +19,22 @@ export function MobileBottomNav() {
       href: "/dashboard/announcements",
       icon: "campaign",
     },
-    { name: "Admin", href: "/admin", icon: "admin_panel_settings" },
   ];
+
+  if (role === "ADMIN") {
+    navItems.push({
+      name: "Admin",
+      href: "/dashboard/admin/events",
+      icon: "admin_panel_settings",
+    });
+  }
 
   return (
     <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex h-16 w-full items-center justify-around border-t bg-surface shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] border-outline-variant">
       {navItems.map((item) => {
-        const isActive = pathname === item.href;
+        const isActive =
+          (pathname.startsWith(item.href) && item.href !== "/dashboard") ||
+          pathname === item.href;
         return (
           <Link
             key={item.name}

@@ -21,12 +21,12 @@ export default async function DashboardLayout({
 
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar role={session?.role} />
       <SidebarInset className="pb-16 md:pb-0">
         <TopNav user={user} />
         {children}
       </SidebarInset>
-      <MobileBottomNav />
+      <MobileBottomNav role={session?.role} />
     </SidebarProvider>
   );
 }
