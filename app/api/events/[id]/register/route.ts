@@ -45,6 +45,15 @@ export async function POST(
       );
     }
 
+    let body: any = {};
+    try {
+      body = await request.json();
+    } catch (e) {
+      // Ignored for empty bodies
+    }
+
+    const { tshirtSize, dietaryRequirements } = body;
+
     // Upsert registration (handle case where user previously cancelled)
     const registration = await prisma.registration.upsert({
       where: {
@@ -55,11 +64,15 @@ export async function POST(
       },
       update: {
         status: "ACTIVE",
+        tshirtSize: tshirtSize || null,
+        dietaryRequirements: dietaryRequirements || null,
       },
       create: {
         userId: session.userId,
         eventId: eventId,
         status: "ACTIVE",
+        tshirtSize: tshirtSize || null,
+        dietaryRequirements: dietaryRequirements || null,
       },
     });
 
