@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { LinkBreadcrumb } from "@/app/components/dashboard/LinkBreadcrumb";
 
 // Dynamically import the map to avoid SSR issues with Leaflet
 const EventMap = dynamic(() => import("@/app/components/events/EventMap"), {
@@ -134,22 +135,7 @@ export default function EventDetailsPage({
   return (
     <main className="flex-1 w-full max-w-7xl mx-auto py-lg px-margin-mobile md:px-margin-desktop lg:px-gutter">
       {/* Breadcrumbs */}
-      <nav
-        aria-label="Breadcrumb"
-        className="flex items-center gap-xs font-display-md text-label-md text-on-surface-variant mb-lg"
-      >
-        <Link
-          href="/dashboard/events"
-          prefetch={false}
-          className="hover:text-primary transition-colors"
-        >
-          Events
-        </Link>
-        <span className="material-symbols-outlined text-sm">chevron_right</span>
-        <span className="text-on-surface font-display-md truncate">
-          {event.title}
-        </span>
-      </nav>
+      <LinkBreadcrumb items={[{ label: "Events", href: "/dashboard/events" }, { label: event.title }]} />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter relative items-start">
         {/* ── Left Column ── */}

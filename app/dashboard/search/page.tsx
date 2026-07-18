@@ -7,23 +7,17 @@ import Link from "next/link";
 import { DateRange } from "react-day-picker";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { LinkBreadcrumb } from "@/app/components/dashboard/LinkBreadcrumb";
+import { EventCard } from "@/app/components/dashboard/EventCard";
 
 // Matches the EventCategory enum in schema.prisma
 const EVENT_CATEGORIES = [
@@ -38,6 +32,7 @@ const EVENT_CATEGORIES = [
 
 // Nicely formatted labels for display
 const CATEGORY_LABELS: Record<string, string> = {
+  ALL: "All events",
   ACADEMIC: "Academic",
   CULTURAL: "Cultural",
   SPORTS: "Sports",
@@ -47,6 +42,18 @@ const CATEGORY_LABELS: Record<string, string> = {
   OTHER: "Other",
 };
 
+// Material icons for each category
+const CATEGORY_ICONS: Record<string, string> = {
+  ALL: "campaign",
+  ACADEMIC: "school",
+  CULTURAL: "palette",
+  SPORTS: "sports_basketball",
+  TECHNICAL: "computer",
+  WORKSHOP: "build",
+  SOCIAL: "groups",
+  OTHER: "category",
+};
+
 function SearchResultsContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
@@ -54,29 +61,33 @@ function SearchResultsContent() {
 
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [registeredEventIds, setRegisteredEventIds] = useState<Set<string>>(
+    new Set(),
+  );
 
   // Filters
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
 
   useEffect(() => {
-    fetchEvents();
-  }, []);
+    Promise.all([
+      fetch("/api/events")
+        .then((r) => r.json())
+        .then((data) => setEvents(data.events || []))
+        .catch((err) => console.error("Failed to fetch events", err))
+        .finally(() => setLoading(false)),
 
-  const fetchEvents = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/events");
-      if (res.ok) {
-        const data = await res.json();
-        setEvents(data.events || []);
-      }
-    } catch (error) {
-      console.error("Failed to fetch events", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+      fetch("/api/user/registrations")
+        .then((r) => r.json())
+        .then((data) => {
+          const ids = new Set<string>(
+            (data.registrations || []).map((r: any) => r.eventId as string),
+          );
+          setRegisteredEventIds(ids);
+        })
+        .catch(console.error),
+    ]);
+  }, []);
 
   const filteredEvents = events.filter((event) => {
     // Search query
@@ -88,18 +99,17 @@ function SearchResultsContent() {
       return false;
     }
 
-    // Category filter — compare against the raw enum string from the API
+    // Category filter
     if (
-      selectedCategories.length > 0 &&
-      !selectedCategories.includes(event.category)
+      selectedCategory !== "ALL" &&
+      event.category !== selectedCategory
     ) {
       return false;
     }
 
-    // Date range filter — check if the event's startAt falls within the range
+    // Date range filter
     if (dateRange?.from || dateRange?.to) {
       const eventDate = new Date(event.startAt);
-      // Normalise to midnight so we compare calendar days, not clock time
       const eventDay = new Date(
         eventDate.getFullYear(),
         eventDate.getMonth(),
@@ -126,255 +136,162 @@ function SearchResultsContent() {
     return true;
   });
 
-  const toggleCategory = (category: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(category)
-        ? prev.filter((c) => c !== category)
-        : [...prev, category],
-    );
-  };
-
   const clearAll = () => {
-    setSelectedCategories([]);
+    setSelectedCategory("ALL");
     setDateRange(undefined);
   };
 
   const hasActiveFilters =
-    selectedCategories.length > 0 || dateRange?.from || dateRange?.to;
+    selectedCategory !== "ALL" || dateRange?.from || dateRange?.to;
 
   return (
-    <div className="p-margin-mobile md:p-margin-desktop bg-surface-bright flex-1">
+    <div className="p-margin-mobile md:p-margin-desktop bg-surface-bright flex-1 overflow-x-hidden">
       {/* Breadcrumbs */}
-      <nav
-        aria-label="Breadcrumb"
-        className="flex items-center gap-xs font-label-md text-label-md text-on-surface-variant mb-lg"
-      >
-        <Link
-          href="/dashboard"
-          className="hover:text-primary transition-colors font-display-md"
-        >
-          Dashboard
-        </Link>
-        <span className="material-symbols-outlined text-sm">chevron_right</span>
-        <span className="text-on-surface font-medium truncate font-display-md">
-          Search
-        </span>
-      </nav>
+      <LinkBreadcrumb items={[{ label: "Dashboard", href: "/dashboard" }, { label: "Search" }]} />
 
-      <div className="mb-lg">
-        <h2 className="font-headline-lg text-headline-lg lg:text-display-lg text-on-surface font-bold">
-          Search Results
-        </h2>
-        <p className="font-body-lg text-body-lg text-on-surface-variant mt-sm">
-          Showing {filteredEvents.length} results{" "}
-          {query && (
-            <span>
-              for "<span className="font-semibold text-primary">{query}</span>"
-            </span>
-          )}
-        </p>
-      </div>
-
-      <div className="flex flex-col lg:flex-row gap-gutter">
-        {/* Filters Sidebar */}
-        <aside className="w-full lg:w-1/4">
-          <Card className="bg-surface-container-lowest border-outline-variant shadow-sm sticky top-24">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
-                Filters
-                {hasActiveFilters && (
-                  <span className="inline-flex items-center justify-center size-5 rounded-full bg-primary text-white text-xs font-bold">
-                    {selectedCategories.length +
-                      (dateRange?.from || dateRange?.to ? 1 : 0)}
-                  </span>
-                )}
-              </CardTitle>
-              <button
-                onClick={clearAll}
-                className="font-label-sm text-label-sm text-secondary hover:underline disabled:opacity-40 disabled:no-underline"
-                disabled={!hasActiveFilters}
-              >
-                Clear All
-              </button>
-            </CardHeader>
-
-            <CardContent className="pt-0 flex flex-col gap-md">
-              {/* Category Filter */}
-              <div>
-                <h4 className="font-label-md text-label-md font-semibold text-on-surface-variant mb-sm">
-                  Category
-                </h4>
-                <div className="flex flex-col gap-sm">
-                  {EVENT_CATEGORIES.map((cat) => (
-                    <label
-                      key={cat}
-                      className="flex items-center gap-sm cursor-pointer w-fit select-none"
-                    >
-                      <Checkbox
-                        id={`search-cat-${cat}`}
-                        checked={selectedCategories.includes(cat)}
-                        onCheckedChange={() => toggleCategory(cat)}
-                      />
-                      <span className="font-body-md text-body-md text-on-surface">
-                        {CATEGORY_LABELS[cat]}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Date Range Filter */}
-              <div>
-                <h4 className="font-label-md text-label-md font-semibold text-on-surface-variant mb-sm">
-                  Date Range
-                </h4>
-                <Popover>
-                  <PopoverTrigger
-                    id="search-date-range-picker"
-                    className={cn(
-                      "flex w-full items-center gap-2 rounded-md border border-outline-variant bg-surface-container-lowest px-3 py-2 text-left text-sm hover:bg-surface-container transition-colors",
-                      !dateRange && "text-on-surface-variant",
-                    )}
-                  >
-                    <CalendarIcon className="size-4 shrink-0 text-on-surface-variant" />
-                    {dateRange?.from ? (
-                      dateRange.to ? (
-                        <span className="truncate text-on-surface text-sm">
-                          {format(dateRange.from, "MMM d")} –{" "}
-                          {format(dateRange.to, "MMM d, yyyy")}
-                        </span>
-                      ) : (
-                        <span className="truncate text-on-surface text-sm">
-                          From {format(dateRange.from, "MMM d, yyyy")}
-                        </span>
-                      )
-                    ) : (
-                      <span className="text-sm">Pick a date range</span>
-                    )}
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="range"
-                      selected={dateRange}
-                      onSelect={setDateRange}
-                      numberOfMonths={1}
-                    />
-                    {(dateRange?.from || dateRange?.to) && (
-                      <div className="border-t border-outline-variant p-2 flex justify-end">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-xs text-on-surface-variant"
-                          onClick={() => setDateRange(undefined)}
-                        >
-                          Clear dates
-                        </Button>
-                      </div>
-                    )}
-                  </PopoverContent>
-                </Popover>
-              </div>
-            </CardContent>
-          </Card>
-        </aside>
-
-        {/* Results List */}
-        <div className="w-full lg:w-3/4 space-y-lg">
-          <section>
-            <h3 className="font-headline-md text-headline-md text-on-surface border-b border-outline-variant pb-sm mb-md flex items-center gap-sm">
-              <span className="material-symbols-outlined text-secondary">
-                event
-              </span>
-              Events
-              {!loading && (
-                <span className="ml-auto font-label-sm text-label-sm text-on-surface-variant">
-                  {filteredEvents.length} result
-                  {filteredEvents.length !== 1 ? "s" : ""}
+      <div className="mb-lg select-none">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 className="font-headline-lg text-headline-lg lg:text-display-lg text-on-surface font-bold">
+              Search Results
+            </h2>
+            <p className="font-body-lg text-body-lg text-on-surface-variant mt-sm">
+              Showing {filteredEvents.length} results{" "}
+              {query && (
+                <span>
+                  for "<span className="font-semibold text-primary">{query}</span>"
                 </span>
               )}
-            </h3>
+            </p>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-              {loading ? (
-                <div className="p-4 bg-surface-container-low rounded-xl h-[300px] animate-pulse w-full"></div>
-              ) : filteredEvents.length === 0 ? (
-                <div className="col-span-full flex flex-col items-center justify-center py-16 gap-4 text-on-surface-variant">
-                  <span className="material-symbols-outlined text-[48px] opacity-40">
-                    search_off
-                  </span>
-                  <p className="font-body-lg text-body-lg">
-                    No events match your search or filters.
-                  </p>
-                  {hasActiveFilters && (
-                    <Button variant="outline" size="sm" onClick={clearAll}>
-                      Clear filters
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Date Range Filter */}
+            <Popover>
+              <PopoverTrigger className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm">
+                <span className="material-symbols-outlined text-[18px]">schedule</span>
+                {dateRange?.from ? (
+                  dateRange.to ? (
+                    <span className="truncate">
+                      {format(dateRange.from, "MMM d")} –{" "}
+                      {format(dateRange.to, "MMM d")}
+                    </span>
+                  ) : (
+                    <span className="truncate">
+                      From {format(dateRange.from, "MMM d")}
+                    </span>
+                  )
+                ) : (
+                  <span>Any day</span>
+                )}
+                <span className="material-symbols-outlined text-[18px]">expand_more</span>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <Calendar
+                  mode="range"
+                  selected={dateRange}
+                  onSelect={setDateRange}
+                  numberOfMonths={1}
+                />
+                {(dateRange?.from || dateRange?.to) && (
+                  <div className="border-t border-outline-variant p-2 flex justify-end">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs text-on-surface-variant"
+                      onClick={() => setDateRange(undefined)}
+                    >
+                      Clear dates
                     </Button>
-                  )}
-                </div>
-              ) : (
-                filteredEvents.map((event) => (
-                  <Card
-                    key={event.id}
-                    onClick={() => router.push(`/dashboard/events/${event.id}`)}
-                    className="bg-surface-container-lowest border-outline-variant rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col group cursor-pointer p-0 select-none"
-                  >
-                    <div className="h-40 overflow-hidden relative bg-surface-container flex items-center justify-center">
-                      <img
-                        src={event.bannerUrl || "/events/1.jpg"}
-                        alt={event.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <Badge
-                        variant="secondary"
-                        className="absolute top-sm right-sm bg-surface-container-lowest/90 backdrop-blur-sm font-label-sm text-label-sm text-primary"
-                      >
-                        {new Date(event.startAt).toLocaleDateString()}
-                      </Badge>
-                    </div>
+                  </div>
+                )}
+              </PopoverContent>
+            </Popover>
 
-                    <CardHeader className="p-4 pb-0 flex-1">
-                      <div className="flex gap-sm mb-sm">
-                        <span
-                          className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold"
-                          style={{
-                            background: "hsl(217 91% 60%)",
-                            color: "#fff",
-                          }}
-                        >
-                          {CATEGORY_LABELS[event.category] ??
-                            event.category ??
-                            "Event"}
-                        </span>
-                      </div>
-                      <CardTitle className="font-headline-md text-headline-md text-on-surface mb-sm line-clamp-1">
-                        {event.title}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-4 pt-2">
-                      <p className="font-body-md text-body-md text-on-surface-variant mb-md line-clamp-2">
-                        {event.description}
-                      </p>
-                    </CardContent>
-
-                    <CardFooter className="p-4 pt-0 mt-auto flex items-center justify-between border-t border-outline-variant/50">
-                      <div className="flex items-center gap-sm text-on-surface-variant font-label-sm text-label-sm mt-4">
-                        <span className="material-symbols-outlined text-[18px]">
-                          location_on
-                        </span>
-                        <span className="truncate max-w-[120px]">
-                          {event.venue}
-                        </span>
-                      </div>
-                      <button className="text-secondary font-label-md text-label-md hover:underline mt-4">
-                        View Details
-                      </button>
-                    </CardFooter>
-                  </Card>
-                ))
-              )}
-            </div>
-          </section>
+            {/* Clear All */}
+            {hasActiveFilters && (
+              <button
+                onClick={clearAll}
+                className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 px-3 py-2 transition-colors"
+              >
+                Clear all
+              </button>
+            )}
+          </div>
         </div>
+
+        {/* Category Tabs */}
+        <div className="mt-8">
+          <ScrollArea className="w-full whitespace-nowrap border-b border-gray-200 dark:border-gray-800">
+            <div className="flex w-max min-w-full items-center justify-between gap-4">
+              {["ALL", ...EVENT_CATEGORIES].map((cat) => {
+                const isActive = selectedCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={cn(
+                      "flex-1 flex flex-col items-center gap-2 min-w-[80px] pb-3 px-2 border-b-[3px] transition-all",
+                      isActive
+                        ? "border-primary text-primary"
+                        : "border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+                    )}
+                  >
+                    <span className="material-symbols-outlined text-[24px]">
+                      {CATEGORY_ICONS[cat]}
+                    </span>
+                    <span className="text-[13.5px] font-medium">
+                      {CATEGORY_LABELS[cat]}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <ScrollBar orientation="horizontal" className="invisible" />
+          </ScrollArea>
+        </div>
+      </div>
+
+      <div className="w-full space-y-lg mt-6">
+        <section>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-md">
+            {loading ? (
+              [...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className="rounded-2xl bg-surface-container-low h-[320px] animate-pulse w-full"
+                />
+              ))
+            ) : filteredEvents.length === 0 ? (
+              <div className="col-span-full flex flex-col items-center justify-center py-16 gap-4 text-on-surface-variant">
+                <span className="material-symbols-outlined text-[48px] opacity-40">
+                  search_off
+                </span>
+                <p className="font-body-lg text-body-lg">
+                  No events match your search or filters.
+                </p>
+                {hasActiveFilters && (
+                  <Button variant="outline" size="sm" onClick={clearAll}>
+                    Clear filters
+                  </Button>
+                )}
+              </div>
+            ) : (
+              filteredEvents.map((event) => {
+                const isRegistered = registeredEventIds.has(event.id);
+                return (
+                  <div key={event.id}>
+                    <EventCard
+                      event={event}
+                      isRegistered={isRegistered}
+                      onClick={() => router.push(`/dashboard/events/${event.id}`)}
+                    />
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </section>
       </div>
     </div>
   );

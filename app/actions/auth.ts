@@ -118,7 +118,7 @@ export async function signIn(
 
   // Redirect based on role
   if (user.role === Role.ADMIN) {
-    redirect("/admin");
+    redirect("/dashboard/admin");
   }
   redirect("/dashboard");
 }

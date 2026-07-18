@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import { Inter, Young_Serif } from "next/font/google";
+import {
+  Inter,
+  Young_Serif,
+  Google_Sans_Flex,
+  Archivo,
+  Pacifico,
+  Quicksand,
+} from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 const inter = Inter({
@@ -7,10 +14,31 @@ const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
+const googlesansflex = Google_Sans_Flex({
+  variable: "--font-google-sans-flex",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+const archivo = Archivo({
+  variable: "--font-archivo",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 const young_serif = Young_Serif({
   variable: "--font-young",
   subsets: ["latin"],
+  weight: ["400"],
+});
+
+const fontSans = Quicksand({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+const fontSerif = Pacifico({
+  subsets: ["latin"],
+  variable: "--font-serif",
   weight: ["400"],
 });
 
@@ -29,11 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${young_serif.className} ${inter.className} h-full antialiased`}
-      suppressHydrationWarning
-    >
+    <html lang="en">
       <head>
         {/* Material Symbols */}
         <link
@@ -41,10 +65,8 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-full flex flex-col" suppressHydrationWarning>
-        <TooltipProvider>
-          {children}
-        </TooltipProvider>
+      <body className={`${fontSans.variable} ${fontSerif.variable} min-h-full flex flex-col bg-background text-foreground`}>
+        <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>
   );

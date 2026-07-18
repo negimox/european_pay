@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AdminTabs } from "@/app/components/admin/AdminTabs";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { LinkBreadcrumb } from "@/app/components/dashboard/LinkBreadcrumb";
 
 export default function AdminEventsPage() {
   const router = useRouter();
@@ -57,6 +57,9 @@ export default function AdminEventsPage() {
 
   return (
     <div className="p-margin-mobile md:p-margin-desktop bg-surface-bright flex-1 overflow-x-hidden">
+      {/* Breadcrumbs */}
+      <LinkBreadcrumb items={[{ label: "Dashboard", href: "/dashboard/admin" }, { label: "Manage Events" }]} />
+
       <div className="mb-lg select-none flex items-center justify-between">
         <div>
           <h2 className="font-headline-lg text-headline-lg lg:text-display-lg text-on-surface font-bold">
@@ -70,9 +73,6 @@ export default function AdminEventsPage() {
           <Button>Create Event</Button>
         </Link>
       </div>
-
-      <AdminTabs />
-
       <div className="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm text-on-surface">

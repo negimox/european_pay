@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { AdminTabs } from "@/app/components/admin/AdminTabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,6 +8,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { Megaphone, Link2, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { LinkBreadcrumb } from "@/app/components/dashboard/LinkBreadcrumb";
 
 export default function AdminAnnouncementsPage() {
   const [announcements, setAnnouncements] = useState<any[]>([]);
@@ -85,6 +86,9 @@ export default function AdminAnnouncementsPage() {
 
   return (
     <div className="p-margin-mobile md:p-margin-desktop bg-surface-bright flex-1 overflow-x-hidden">
+      {/* Breadcrumbs */}
+      <LinkBreadcrumb items={[{ label: "Dashboard", href: "/dashboard/admin" }, { label: "Manage Announcements" }]} />
+
       <div className="mb-lg select-none flex items-center justify-between">
         <div>
           <h2 className="font-headline-lg text-headline-lg lg:text-display-lg text-on-surface font-bold">
@@ -152,8 +156,6 @@ export default function AdminAnnouncementsPage() {
           </DialogContent>
         </Dialog>
       </div>
-
-      <AdminTabs />
 
       <div className="space-y-4">
         {loading ? (

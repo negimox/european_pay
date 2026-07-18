@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { SettingsForm } from "./SettingsForm";
+import { LinkBreadcrumb } from "@/app/components/dashboard/LinkBreadcrumb";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -27,21 +28,7 @@ export default async function SettingsPage() {
   return (
     <div className="w-full h-full p-[16px] md:p-[24px] lg:p-[32px] max-w-4xl mx-auto flex-1 overflow-x-hidden bg-surface">
       {/* Breadcrumbs */}
-      <nav
-        aria-label="Breadcrumb"
-        className="flex items-center gap-xs font-label-md text-label-md text-on-surface-variant mb-lg"
-      >
-        <Link
-          href="/dashboard"
-          className="hover:text-primary transition-color font-display-md"
-        >
-          Dashboard
-        </Link>
-        <span className="material-symbols-outlined text-sm">chevron_right</span>
-        <span className="font-display-md text-on-surface truncate">
-          Settings
-        </span>
-      </nav>
+      <LinkBreadcrumb items={[{ label: "Dashboard", href: "/dashboard" }, { label: "Settings", icon: "settings" }]} />
 
       <div className="mb-8">
         <h1 className="font-display-lg text-display-lg text-primary mb-2">

@@ -15,27 +15,12 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar";
 
+import { ADMIN_NAV_ITEMS, USER_NAV_ITEMS } from "@/config/navigation";
+
 export function AppSidebar({ role }: { role?: string }) {
   const pathname = usePathname();
 
-  const navItems = [
-    { name: "Dashboard", href: "/dashboard", icon: "dashboard" },
-    { name: "Events", href: "/dashboard/events", icon: "event" },
-    {
-      name: "My Registrations",
-      href: "/dashboard/registrations",
-      icon: "how_to_reg",
-    },
-    {
-      name: "Announcements",
-      href: "/dashboard/announcements",
-      icon: "campaign",
-    },
-  ];
-
-  if (role === "ADMIN") {
-    navItems.push({ name: "Admin Tools", href: "/dashboard/admin/events", icon: "admin_panel_settings" });
-  }
+  const navItems = role === "ADMIN" ? ADMIN_NAV_ITEMS : USER_NAV_ITEMS;
 
   return (
     <Sidebar className="bg-surface-container-low border-r border-outline-variant">
@@ -67,7 +52,11 @@ export function AppSidebar({ role }: { role?: string }) {
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton
-                    isActive={pathname.startsWith(item.href) && item.href !== "/dashboard" || pathname === item.href}
+                    isActive={
+                      (item.href === "/dashboard" || item.href === "/dashboard/admin") 
+                        ? pathname === item.href 
+                        : pathname.startsWith(item.href)
+                    }
                     className="p-0 h-auto w-full rounded-lg transition-all duration-200 data-active:bg-primary data-active:text-on-primary data-active:hover:bg-primary data-active:hover:text-on-primary hover:bg-surface-container-high hover:text-on-surface overflow-hidden"
                   >
                     <Link
@@ -89,17 +78,6 @@ export function AppSidebar({ role }: { role?: string }) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {role === "ADMIN" && (
-          <div className="px-4 py-2 mt-2">
-            <Link
-              href="/dashboard/admin/events/new"
-              prefetch={false}
-              className="bg-primary text-on-primary font-label-md text-label-md py-sm px-md rounded-lg hover:shadow-md transition-all duration-200 w-full text-center block"
-            >
-              Create Event
-            </Link>
-          </div>
-        )}
       </SidebarContent>
 
 
