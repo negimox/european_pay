@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+enum RegistrationStatus {
+  ACTIVE
+  CANCELLED
+}
+
+enum EventCategory {
+  ACADEMIC
+  CULTURAL
+  SPORTS
+  TECHNICAL
+  WORKSHOP
+  SOCIAL
+  OTHER
+}
+
+// ─── Models ───────────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String?
+  role         Role     @default(STUDENT)
+  avatarUrl    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  registrations Registration[]
+  createdEvents Event[]        @relation("EventCreatedBy")
+  announcements Announcement[]
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model Event {
+  id                   String        @id @default(cuid())
+  title                String
+  description          String
+  bannerUrl            String?
+  category             EventCategory @default(OTHER)
+  venue                String
+  startAt              DateTime
+  endAt                DateTime
+  registrationDeadline DateTime
+  capacity             Int
+  createdById          String
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  // Relations
+  createdBy     User           @relation("EventCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  registrations Registration[]
+
+  @@index([createdById])
+  @@index([category])
+  @@index([startAt])
+  @@index([registrationDeadline])
+  @@map("events")
+}
+
+model Registration {
+  id           String             @id @default(cuid())
+  userId       String
+  eventId      String
+  status              RegistrationStatus @default(ACTIVE)
+  tshirtSize          String?
+  dietaryRequirements String?
+  registeredAt        DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  // Relations
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  // A user can only register once per event
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("registrations")
+}
+
+model Announcement {
+  id            String   @id @default(cuid())
+  title         String
+  content       String
+  publishedById String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  publishedBy User @relation(fields: [publishedById], references: [id], onDelete: Restrict)
+
+  @@index([publishedById])
+  @@index([createdAt])
+  @@map("announcements")
+}
