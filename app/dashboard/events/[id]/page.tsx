@@ -78,7 +78,7 @@ export default function EventDetailsPage({ params }: { params: Promise<{ id: str
     <main className="flex-1 w-full max-w-7xl mx-auto py-lg px-margin-mobile md:px-margin-desktop lg:px-gutter">
       {/* Breadcrumbs */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-xs font-label-md text-label-md text-on-surface-variant mb-lg">
-        <Link href="/dashboard/search?q=events" className="hover:text-primary transition-colors">Events</Link>
+        <Link href="/dashboard/events" className="hover:text-primary transition-colors">Events</Link>
         <span className="material-symbols-outlined text-sm">chevron_right</span>
         <span className="text-on-surface font-medium truncate">{event.title}</span>
       </nav>
