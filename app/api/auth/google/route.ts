@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
+import { NextRequest } from "next/server";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const clientId = process.env.GOOGLE_CLIENT_ID;
-  const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/google/callback`;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin;
+  const redirectUri = `${baseUrl}/api/auth/google/callback`;
   
   if (!clientId || !redirectUri) {
     return new Response("Missing Google SSO configuration", { status: 500 });
