@@ -19,7 +19,7 @@ export function AnnouncementsList({
   loading = false,
 }: AnnouncementsListProps) {
   return (
-    <Card className="h-full border-outline-variant/30 bg-surface">
+    <Card className="max-h-full border-outline-variant/30 bg-surface">
       <CardHeader></CardHeader>
       <CardContent className="px-0 pb-0">
         <ScrollArea className="px-6 pb-6">

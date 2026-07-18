@@ -97,27 +97,7 @@ export function AppSidebar() {
         </div>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-outline-variant p-4">
-        <SidebarMenu className="gap-sm">
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              isActive={pathname === "/settings"}
-              className="p-0 h-auto w-full rounded-lg transition-all duration-200 data-active:bg-primary data-active:text-on-primary data-active:hover:bg-primary data-active:hover:text-on-primary hover:bg-surface-container-high hover:text-on-surface overflow-hidden"
-            >
-              <Link
-                href="/settings"
-                prefetch={false}
-                className="flex items-center gap-3 px-4 py-3 w-full h-full text-on-surface-variant"
-              >
-                <span className="material-symbols-outlined text-[22px] shrink-0">
-                  settings
-                </span>
-                <span className="font-label-md text-label-md">Settings</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
+
     </Sidebar>
   );
 }

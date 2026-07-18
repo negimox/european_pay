@@ -6,11 +6,31 @@ import { useRouter } from "next/navigation";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuGroup,
+} from "@/components/ui/dropdown-menu";
 
 export function TopNav() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobileSearch, setIsMobileSearch] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      router.push("/login");
+      router.refresh();
+    } catch (error) {
+      console.error("Failed to logout:", error);
+    }
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,15 +122,36 @@ export function TopNav() {
               <span className="material-symbols-outlined">search</span>
             </Button>
 
-            <div className="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border-2 border-surface cursor-pointer shrink-0">
-              <Image
-                src="/web-app-manifest-512x512.png"
-                alt="Student Profile Picture"
-                width={40}
-                height={40}
-                className="w-full h-full object-cover p-1"
-              />
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="relative h-10 w-10 rounded-full shrink-0 outline-none flex items-center justify-center focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                <Avatar className="h-10 w-10 border-2 border-surface cursor-pointer">
+                  <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                    S
+                  </AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">Student</p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        student@example.com
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => router.push("/settings")} className="cursor-pointer">
+                  <span className="material-symbols-outlined mr-2 text-[18px]">settings</span>
+                  Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600">
+                  <span className="material-symbols-outlined mr-2 text-[18px]">logout</span>
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </>
       )}
