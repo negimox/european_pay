@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Google_Sans_Flex, Young_Serif } from "next/font/google";
+import { Inter, Young_Serif } from "next/font/google";
 import "./globals.css";
-const google_sans_flex = Google_Sans_Flex({
-  variable: "--font-google_sans_flex",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
@@ -30,7 +30,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${young_serif.className} ${google_sans_flex.variable} h-full antialiased`}
+      className={`${young_serif.className} ${inter.className} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

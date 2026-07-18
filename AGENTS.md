@@ -61,3 +61,7 @@ When writing code, design systems, or database migrations, prioritize the follow
 - **Feature Completion (20%):** Meeting all core requirements before working on bonus features.
 - **Innovation & Bonus Features (10%):** Search & filters, QR codes, dark mode, user profiles, dashboard analytics, email notifications.
 
+
+## 5. UI Spacing & Consistency Rules
+- **Icon Inputs:** Always use consistent padding/margins for form inputs containing icons across the entire application. Standardize on `relative` wrapper, `absolute left-3 top-1/2 -translate-y-1/2` for the icon, and `w-full pl-10 pr-3 py-2` (or `py-3` for larger inputs) for the input box.
+- **Component Consistency:** Maintain consistent border radii, colors, and shadows for similar components (e.g., all auth forms must share the exact same input structure). Do not deviate across different pages.
