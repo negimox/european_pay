@@ -52,13 +52,25 @@ export default function RegistrationsPage() {
   return (
     <main className="flex-1 p-margin-mobile md:p-margin-desktop overflow-x-hidden bg-surface">
       {/* Breadcrumbs */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-xs font-label-md text-label-md text-on-surface-variant mb-lg">
-        <Link href="/dashboard" className="hover:text-primary transition-colors">Dashboard</Link>
+      <nav
+        aria-label="Breadcrumb"
+        className="flex items-center gap-xs font-label-md text-label-md text-on-surface-variant mb-lg"
+      >
+        <Link
+          href="/dashboard"
+          className="hover:text-primary transition-colors font-display-md"
+        >
+          Dashboard
+        </Link>
         <span className="material-symbols-outlined text-sm">chevron_right</span>
-        <span className="text-on-surface font-medium truncate">My Registrations</span>
+        <span className="text-on-surface font-medium truncate font-display-md">
+          My Registrations
+        </span>
       </nav>
 
-      <h1 className="font-display-lg text-display-lg text-primary mb-6">My Registrations</h1>
+      <h1 className="font-display-lg text-display-lg text-primary mb-6">
+        My Registrations
+      </h1>
       <MyRegistrationsList
         registrations={registrations}
         loading={loadingRegistrations}

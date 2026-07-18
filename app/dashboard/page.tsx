@@ -17,7 +17,7 @@ const getDashboardData = cache(async (userId: string | undefined) => {
     userId
       ? prisma.user.findUnique({
           where: { id: userId },
-          select: { name: true },
+          select: { firstName: true, lastName: true },
         })
       : Promise.resolve(null),
 
@@ -56,7 +56,7 @@ export default async function DashboardPage() {
     session?.userId
   );
 
-  const userName = user?.name ?? "Student";
+  const userName = user ? `${user.firstName} ${user.lastName}` : "Student";
 
   return (
     <Suspense fallback={<div className="p-8 text-on-surface">Loading Dashboard...</div>}>

@@ -30,7 +30,7 @@ export default function RegisterPage() {
           <div className="absolute inset-0 z-10 bg-gradient-to-t from-on-surface/80 via-on-surface/30 to-transparent"></div>
 
           {/* Branding / Inspirational Text */}
-          <div className="relative z-20 text-on-primary w-full max-w-lg">
+          <div className="relative z-20 text-on-primary w-full max-w-[512px]">
             <div className="flex items-center gap-2 mb-[24px]">
               <Image
                 src="/web-app-manifest-512x512.png"
@@ -82,32 +82,61 @@ export default function RegisterPage() {
 
             {/* Registration Form */}
             <form action={formAction} className="space-y-5">
-              {/* Full Name */}
-              <div>
-                <label
-                  className="block font-label-md text-label-md text-on-surface mb-[4px]"
-                  htmlFor="name"
-                >
-                  Full Name
-                </label>
-                <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">
-                    person
-                  </span>
-                  <input
-                    className="w-full pl-10 pr-3 py-3 rounded-lg border border-outline-variant bg-surface-bright text-on-surface font-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none"
-                    id="name"
-                    name="name"
-                    placeholder="Jane Doe"
-                    required
-                    type="text"
-                  />
+              <div className="flex gap-4">
+                {/* First Name */}
+                <div className="flex-1">
+                  <label
+                    className="block font-label-md text-label-md text-on-surface mb-[4px]"
+                    htmlFor="firstName"
+                  >
+                    First Name
+                  </label>
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">
+                      person
+                    </span>
+                    <input
+                      className="w-full pl-10 pr-3 py-3 rounded-lg border border-outline-variant bg-surface-bright text-on-surface font-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+                      id="firstName"
+                      name="firstName"
+                      placeholder="Jane"
+                      required
+                      type="text"
+                    />
+                  </div>
+                  {state?.fieldErrors?.firstName && (
+                    <p className="mt-1 text-xs text-error">
+                      {state.fieldErrors.firstName[0]}
+                    </p>
+                  )}
                 </div>
-                {state?.fieldErrors?.name && (
-                  <p className="mt-1 text-xs text-error">
-                    {state.fieldErrors.name[0]}
-                  </p>
-                )}
+
+                {/* Last Name */}
+                <div className="flex-1">
+                  <label
+                    className="block font-label-md text-label-md text-on-surface mb-[4px]"
+                    htmlFor="lastName"
+                  >
+                    Last Name
+                  </label>
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">
+                      person
+                    </span>
+                    <input
+                      className="w-full pl-10 pr-3 py-3 rounded-lg border border-outline-variant bg-surface-bright text-on-surface font-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+                      id="lastName"
+                      name="lastName"
+                      placeholder="Doe"
+                      type="text"
+                    />
+                  </div>
+                  {state?.fieldErrors?.lastName && (
+                    <p className="mt-1 text-xs text-error">
+                      {state.fieldErrors.lastName[0]}
+                    </p>
+                  )}
+                </div>
               </div>
 
               {/* University Email */}

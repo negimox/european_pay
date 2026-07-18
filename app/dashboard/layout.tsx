@@ -1,17 +1,28 @@
 import { AppSidebar } from "@/app/components/dashboard/Sidebar";
 import { TopNav } from "@/app/components/dashboard/TopNav";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { getSession } from "@/lib/auth/session";
+import { prisma } from "@/lib/prisma";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getSession();
+  let user = null;
+  if (session?.userId) {
+    user = await prisma.user.findUnique({
+      where: { id: session.userId },
+      select: { firstName: true, lastName: true, email: true },
+    });
+  }
+
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <TopNav />
+        <TopNav user={user} />
         {children}
       </SidebarInset>
     </SidebarProvider>

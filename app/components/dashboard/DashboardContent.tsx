@@ -27,12 +27,12 @@ import {
 } from "@/components/ui/carousel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-export function DashboardContent({ 
+export function DashboardContent({
   userName,
   initialEvents = [],
   initialRegistrations = [],
-  initialAnnouncements = []
-}: { 
+  initialAnnouncements = [],
+}: {
   userName: string;
   initialEvents?: any[];
   initialRegistrations?: any[];
@@ -41,8 +41,10 @@ export function DashboardContent({
   const router = useRouter();
 
   const [events, setEvents] = useState<any[]>(initialEvents);
-  const [registrations, setRegistrations] = useState<any[]>(initialRegistrations);
-  const [announcements, setAnnouncements] = useState<any[]>(initialAnnouncements);
+  const [registrations, setRegistrations] =
+    useState<any[]>(initialRegistrations);
+  const [announcements, setAnnouncements] =
+    useState<any[]>(initialAnnouncements);
   const [loadingEvents, setLoadingEvents] = useState(false);
   const [loadingRegistrations, setLoadingRegistrations] = useState(false);
   const [loadingAnnouncements, setLoadingAnnouncements] = useState(false);
@@ -52,11 +54,15 @@ export function DashboardContent({
     const eventDate = new Date(dateStr);
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const target = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
-    
+    const target = new Date(
+      eventDate.getFullYear(),
+      eventDate.getMonth(),
+      eventDate.getDate(),
+    );
+
     const diffTime = target.getTime() - today.getTime();
     const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) return "Today";
     if (diffDays === 1) return "Tomorrow";
     if (diffDays === -1) return "Yesterday";
@@ -111,17 +117,19 @@ export function DashboardContent({
       {/* Breadcrumbs */}
       <nav
         aria-label="Breadcrumb"
-        className="flex items-center gap-xs font-label-md text-label-md text-on-surface-variant mb-lg"
+        className="font-display-sm flex items-center gap-xs font-label-md text-label-md text-on-surface-variant mb-lg"
       >
         <Link
           href="/dashboard"
           prefetch={false}
-          className="hover:text-primary transition-colors"
+          className="hover:text-primary transition-colors font-display-md"
         >
           Dashboard
         </Link>
         <span className="material-symbols-outlined text-sm">chevron_right</span>
-        <span className="text-on-surface font-medium truncate">Overview</span>
+        <span className="text-on-surface font-medium truncate font-display-md">
+          Overview
+        </span>
       </nav>
 
       {/* Greeting */}
@@ -276,7 +284,9 @@ export function DashboardContent({
                               hour: "2-digit",
                               minute: "2-digit",
                             })}{" "}
-                            <span className="font-medium text-primary">({getRelativeTime(event.startAt)})</span>
+                            <span className="font-medium text-primary">
+                              ({getRelativeTime(event.startAt)})
+                            </span>
                           </span>
                         </div>
                         <div className="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md">

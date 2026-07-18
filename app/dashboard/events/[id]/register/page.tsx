@@ -62,7 +62,7 @@ export default function RegisterEventPage({
         .then((data) => {
           if (data.user) {
             setUserProfile({
-              name: data.user.name ?? "",
+              name: `${data.user.firstName}${data.user.lastName ? ` ${data.user.lastName}` : ""}`,
               email: data.user.email ?? "",
             });
           }
@@ -261,7 +261,7 @@ export default function RegisterEventPage({
         <Link
           href="/dashboard/events"
           prefetch={false}
-          className="hover:text-primary transition-colors"
+          className="hover:text-primary transition-colors font-display-md"
         >
           Events
         </Link>
@@ -269,12 +269,14 @@ export default function RegisterEventPage({
         <Link
           href={`/dashboard/events/${id}`}
           prefetch={false}
-          className="hover:text-primary transition-colors truncate max-w-[160px]"
+          className="hover:text-primary transition-colors font-display-md truncate max-w-[160px]"
         >
           {event.title}
         </Link>
         <span className="material-symbols-outlined text-sm">chevron_right</span>
-        <span className="text-on-surface font-medium">Register</span>
+        <span className="text-on-surface font-medium font-display-md">
+          Register
+        </span>
       </nav>
 
       {/* Back button */}
