@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -95,7 +95,22 @@ export function TopNav({ user }: TopNavProps) {
       ) : (
         <>
           <div className="flex items-center flex-1">
-            <SidebarTrigger className="lg:hidden mr-2" />
+            <Link
+              href="/dashboard"
+              prefetch={false}
+              className="md:hidden flex items-center gap-2 group select-none"
+            >
+              <Image
+                src="/web-app-manifest-512x512.png"
+                alt="UniEvent Logo"
+                width={24}
+                height={24}
+                className="pointer-events-none"
+              />
+              <span className="font-headline-sm text-[18px] font-bold text-primary group-hover:text-primary/80 transition-colors">
+                UniEvent
+              </span>
+            </Link>
           </div>
 
           <div className="hidden md:flex flex-[2] justify-center px-4 w-full">

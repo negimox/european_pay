@@ -1,5 +1,6 @@
 import { AppSidebar } from "@/app/components/dashboard/Sidebar";
 import { TopNav } from "@/app/components/dashboard/TopNav";
+import { MobileBottomNav } from "@/app/components/dashboard/MobileBottomNav";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
@@ -20,11 +21,12 @@ export default async function DashboardLayout({
 
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
+      <AppSidebar role={session?.role} />
+      <SidebarInset className="pb-16 md:pb-0">
         <TopNav user={user} />
         {children}
       </SidebarInset>
+      <MobileBottomNav role={session?.role} />
     </SidebarProvider>
   );
 }

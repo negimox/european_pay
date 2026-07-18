@@ -15,7 +15,7 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar";
 
-export function AppSidebar() {
+export function AppSidebar({ role }: { role?: string }) {
   const pathname = usePathname();
 
   const navItems = [
@@ -31,8 +31,11 @@ export function AppSidebar() {
       href: "/dashboard/announcements",
       icon: "campaign",
     },
-    { name: "Admin Tools", href: "/admin", icon: "admin_panel_settings" },
   ];
+
+  if (role === "ADMIN") {
+    navItems.push({ name: "Admin Tools", href: "/dashboard/admin/events", icon: "admin_panel_settings" });
+  }
 
   return (
     <Sidebar className="bg-surface-container-low border-r border-outline-variant">
@@ -64,7 +67,7 @@ export function AppSidebar() {
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton
-                    isActive={pathname === item.href}
+                    isActive={pathname.startsWith(item.href) && item.href !== "/dashboard" || pathname === item.href}
                     className="p-0 h-auto w-full rounded-lg transition-all duration-200 data-active:bg-primary data-active:text-on-primary data-active:hover:bg-primary data-active:hover:text-on-primary hover:bg-surface-container-high hover:text-on-surface overflow-hidden"
                   >
                     <Link
@@ -86,15 +89,17 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <div className="px-4 py-2 mt-2">
-          <Link
-            href="/admin"
-            prefetch={false}
-            className="bg-primary text-on-primary font-label-md text-label-md py-sm px-md rounded-lg hover:shadow-md transition-all duration-200 w-full text-center block"
-          >
-            Create Event
-          </Link>
-        </div>
+        {role === "ADMIN" && (
+          <div className="px-4 py-2 mt-2">
+            <Link
+              href="/dashboard/admin/events/new"
+              prefetch={false}
+              className="bg-primary text-on-primary font-label-md text-label-md py-sm px-md rounded-lg hover:shadow-md transition-all duration-200 w-full text-center block"
+            >
+              Create Event
+            </Link>
+          </div>
+        )}
       </SidebarContent>
 
 

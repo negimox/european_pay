@@ -4,9 +4,9 @@ import { createSession } from "@/lib/auth/session";
 import { Role } from "@prisma/client";
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const code = searchParams.get("code");
-  const error = searchParams.get("error");
+  const url = new URL(request.url);
+  const code = url.searchParams.get("code");
+  const error = url.searchParams.get("error");
 
   if (error) {
     return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(error)}`, request.url));
@@ -18,7 +18,8 @@ export async function GET(request: Request) {
 
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-  const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/google/callback`;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || url.origin;
+  const redirectUri = `${baseUrl}/api/auth/google/callback`;
 
   if (!clientId || !clientSecret) {
     return new Response("Missing Google SSO configuration", { status: 500 });
