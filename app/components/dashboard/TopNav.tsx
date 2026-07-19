@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
+import { ModeToggle } from "@/components/theme-toggle";
 
 interface TopNavProps {
   user?: {
@@ -154,6 +155,8 @@ export function TopNav({ user, role }: TopNavProps) {
                 <span className="material-symbols-outlined">search</span>
               </Button>
             )}
+
+            <ModeToggle />
 
             <DropdownMenu>
               <DropdownMenuTrigger className="relative h-10 w-10 rounded-full shrink-0 outline-none flex items-center justify-center focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">

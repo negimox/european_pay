@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Pacifico, Quicksand } from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const fontSans = Quicksand({
   subsets: ["latin"],
@@ -29,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* Material Symbols */}
         <link
@@ -40,7 +41,14 @@ export default function RootLayout({
       <body
         className={`${fontSans.variable} ${fontSerif.variable} min-h-full flex flex-col bg-background text-foreground`}
       >
-        <TooltipProvider>{children}</TooltipProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <TooltipProvider>{children}</TooltipProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

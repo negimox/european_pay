@@ -89,15 +89,57 @@ export default function EventDetailsPage({
 
   if (loading) {
     return (
-      <main className="flex-1 w-full max-w-7xl mx-auto py-lg px-margin-mobile md:px-margin-desktop lg:px-gutter">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
-          <div className="lg:col-span-8 flex flex-col gap-xl">
-            <div className="w-full h-[400px] rounded-xl bg-surface-container animate-pulse" />
-            <div className="h-8 w-3/4 rounded-lg bg-surface-container animate-pulse" />
-            <div className="h-48 rounded-xl bg-surface-container animate-pulse" />
+      <main className="flex-1 w-full max-w-7xl mx-auto py-lg px-margin-mobile md:px-margin-desktop lg:px-gutter pb-40 md:pb-32">
+        {/* Breadcrumbs skeleton */}
+        <div className="mb-6">
+          <Skeleton className="h-5 w-48" />
+        </div>
+
+        {/* Mobile Title skeleton */}
+        <Skeleton className="lg:hidden h-10 w-3/4 mb-8" />
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 relative items-start">
+          {/* Left Column */}
+          <div className="lg:col-span-7 flex flex-col gap-10 order-2 lg:order-1">
+            <Skeleton className="hidden lg:block h-12 w-3/4" />
+            
+            <div>
+              <Skeleton className="h-8 w-24 mb-6" />
+              <div className="space-y-3">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-4 w-4/5" />
+              </div>
+            </div>
+
+            <div>
+              <Skeleton className="h-8 w-24 mb-6" />
+              <Skeleton className="w-full h-[300px] mt-4 mb-8 rounded-2xl" />
+            </div>
           </div>
-          <div className="lg:col-span-4">
-            <div className="h-64 rounded-xl bg-surface-container animate-pulse" />
+
+          {/* Right Column */}
+          <div className="lg:col-span-5 relative flex flex-col gap-4 order-1 lg:order-2">
+            <div className="w-full rounded-2xl overflow-hidden relative border border-outline-variant/30">
+              <AspectRatio ratio={16 / 9}>
+                <Skeleton className="w-full h-full rounded-2xl" />
+              </AspectRatio>
+            </div>
+            
+            <Card className="bg-surface-container-lowest border border-outline-variant rounded-[20px] p-2">
+              <CardContent className="p-4 space-y-6">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="flex gap-4 items-start">
+                    <Skeleton className="h-10 w-10 rounded-xl shrink-0" />
+                    <div className="mt-0.5 space-y-2 flex-1">
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-3 w-48" />
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>
@@ -186,9 +228,12 @@ export default function EventDetailsPage({
               <h2 className="font-headline-sm text-headline-sm text-on-surface mb-6 font-bold">
                 Location{" "}
               </h2>
-              {event.venue.toLowerCase().includes("online") || event.venue.toLowerCase().includes("zoom") ? (
+              {event.venue.toLowerCase().includes("online") ||
+              event.venue.toLowerCase().includes("zoom") ? (
                 <div className="mt-4 mb-8">
-                  <p className="text-on-surface-variant font-medium">Online Event</p>
+                  <p className="text-on-surface-variant font-medium">
+                    Online Event
+                  </p>
                 </div>
               ) : (
                 <div className="relative w-full h-[300px] mt-4 mb-8 rounded-2xl overflow-hidden border border-outline-variant shadow-sm z-10 bg-surface-container">
@@ -196,7 +241,6 @@ export default function EventDetailsPage({
                 </div>
               )}
             </div>
-
           </div>
 
           {/* ── Right Column ── */}
@@ -260,7 +304,13 @@ export default function EventDetailsPage({
                     <p className="text-xs text-on-surface-variant mt-1">
                       {new Date(event.registrationDeadline).toLocaleDateString(
                         "en-US",
-                        { month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" },
+                        {
+                          month: "long",
+                          day: "numeric",
+                          year: "numeric",
+                          hour: "numeric",
+                          minute: "2-digit",
+                        },
                       )}
                     </p>
                   </div>
@@ -270,7 +320,9 @@ export default function EventDetailsPage({
                   <div className="bg-green-500/10 text-green-600 p-2.5 rounded-xl flex items-center justify-center shrink-0">
                     <span className="material-symbols-outlined text-xl">
                       {event.venue.toLowerCase().includes("online") ||
-                      event.venue.toLowerCase().includes("zoom") ? "videocam" : "location_on"}
+                      event.venue.toLowerCase().includes("zoom")
+                        ? "videocam"
+                        : "location_on"}
                     </span>
                   </div>
                   <div className="mt-0.5">
@@ -378,7 +430,7 @@ export default function EventDetailsPage({
                   router.push(`/dashboard/events/${resolvedParams.id}/register`)
                 }
                 disabled={isFull}
-                className="bg-pink-400 rounded-xl px-8 py-6 text-[15px] font-bold shadow-md"
+                className="rounded-xl px-8 py-6 text-[15px] font-bold shadow-md"
               >
                 {isFull ? "Event Full" : "Register"}
               </Button>

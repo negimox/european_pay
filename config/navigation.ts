@@ -15,6 +15,7 @@ export const USER_NAV_ITEMS: NavItem[] = [
   { name: "Dashboard", mobileName: "Home", href: "/dashboard", icon: "dashboard" },
   { name: "Events", mobileName: "Events", href: "/dashboard/events", icon: "event" },
   { name: "My Registrations", mobileName: "My Events", href: "/dashboard/registrations", icon: "how_to_reg" },
+  { name: "Calendar View", mobileName: "Calendar", href: "/dashboard/calendar", icon: "calendar_month" },
   { name: "Announcements", mobileName: "Notices", href: "/dashboard/announcements", icon: "campaign" },
 ];
 

@@ -19,6 +19,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import {
   Carousel,
@@ -226,7 +227,19 @@ export function DashboardContent({
                     key={i}
                     className="pl-4 basis-[85%] md:basis-1/2 lg:basis-1/3"
                   >
-                    <div className="animate-pulse bg-surface-container-low rounded-xl h-[300px] w-full" />
+                    <div className="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden flex flex-col h-[300px] w-full">
+                      <Skeleton className="h-[140px] w-full rounded-none" />
+                      <div className="p-4 flex flex-col gap-4 flex-1">
+                        <div className="flex gap-2">
+                          <Skeleton className="h-6 w-16 rounded-full" />
+                        </div>
+                        <Skeleton className="h-6 w-3/4" />
+                        <div className="mt-auto space-y-2">
+                          <Skeleton className="h-4 w-full" />
+                          <Skeleton className="h-4 w-2/3" />
+                        </div>
+                      </div>
+                    </div>
                   </CarouselItem>
                 ))
               ) : events.length === 0 ? (
