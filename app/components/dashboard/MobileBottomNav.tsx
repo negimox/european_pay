@@ -3,38 +3,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { ADMIN_NAV_ITEMS, USER_NAV_ITEMS } from "@/config/navigation";
+
 export function MobileBottomNav({ role }: { role?: string }) {
   const pathname = usePathname();
 
-  const navItems = [
-    { name: "Home", href: "/dashboard", icon: "dashboard" },
-    { name: "Events", href: "/dashboard/events", icon: "event" },
-    {
-      name: "My Events",
-      href: "/dashboard/registrations",
-      icon: "how_to_reg",
-    },
-    {
-      name: "Notices",
-      href: "/dashboard/announcements",
-      icon: "campaign",
-    },
-  ];
-
-  if (role === "ADMIN") {
-    navItems.push({
-      name: "Admin",
-      href: "/dashboard/admin/events",
-      icon: "admin_panel_settings",
-    });
-  }
+  const navItems = role === "ADMIN" ? ADMIN_NAV_ITEMS : USER_NAV_ITEMS;
 
   return (
     <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex h-16 w-full items-center justify-around border-t bg-surface shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] border-outline-variant">
       {navItems.map((item) => {
-        const isActive =
-          (pathname.startsWith(item.href) && item.href !== "/dashboard") ||
-          pathname === item.href;
+        const isActive = (item.href === "/dashboard" || item.href === "/dashboard/admin")
+          ? pathname === item.href
+          : pathname.startsWith(item.href);
         return (
           <Link
             key={item.name}

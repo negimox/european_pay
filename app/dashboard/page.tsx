@@ -1,4 +1,5 @@
 import { Suspense, cache } from "react";
+import { redirect } from "next/navigation";
 import { DashboardContent } from "@/app/components/dashboard/DashboardContent";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
@@ -52,6 +53,11 @@ const getDashboardData = cache(async (userId: string | undefined) => {
 
 export default async function DashboardPage() {
   const session = await getSession();
+
+  if (session?.role === "ADMIN") {
+    redirect("/dashboard/admin");
+  }
+
   const { user, events, registrations, announcements } = await getDashboardData(
     session?.userId
   );

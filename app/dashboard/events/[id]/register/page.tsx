@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
+import { LinkBreadcrumb } from "@/app/components/dashboard/LinkBreadcrumb";
 
 const REDIRECT_DELAY = 5; // seconds
 
@@ -254,30 +255,11 @@ export default function RegisterEventPage({
   return (
     <main className="flex-1 w-full max-w-7xl mx-auto py-lg px-margin-mobile md:px-margin-desktop lg:px-gutter">
       {/* Breadcrumb */}
-      <nav
-        aria-label="Breadcrumb"
-        className="flex items-center gap-xs font-label-md text-label-md text-on-surface-variant mb-lg"
-      >
-        <Link
-          href="/dashboard/events"
-          prefetch={false}
-          className="hover:text-primary transition-colors font-display-md"
-        >
-          Events
-        </Link>
-        <span className="material-symbols-outlined text-sm">chevron_right</span>
-        <Link
-          href={`/dashboard/events/${id}`}
-          prefetch={false}
-          className="hover:text-primary transition-colors font-display-md truncate max-w-[160px]"
-        >
-          {event.title}
-        </Link>
-        <span className="material-symbols-outlined text-sm">chevron_right</span>
-        <span className="text-on-surface font-medium font-display-md">
-          Register
-        </span>
-      </nav>
+      <LinkBreadcrumb items={[
+        { label: "Events", href: "/dashboard/events" }, 
+        { label: event.title, href: `/dashboard/events/${id}` },
+        { label: "Register" }
+      ]} />
 
       {/* Back button */}
       <button

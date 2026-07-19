@@ -13,13 +13,13 @@ async function main() {
   console.log("🌱 Seeding database...");
 
   // ── Admin user ─────────────────────────────────────────────────────────────
-  const adminEmail = "admin@campus.edu";
+  const adminEmail = "admin@test.com";
   const existingAdmin = await prisma.user.findUnique({
     where: { email: adminEmail },
   });
 
   if (!existingAdmin) {
-    const passwordHash = await bcrypt.hash("Admin@1234", 12);
+    const passwordHash = await bcrypt.hash("Admin1234", 12);
     const admin = await prisma.user.create({
       data: {
         firstName: "Campus",

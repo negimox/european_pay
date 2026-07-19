@@ -38,46 +38,51 @@ export default function LoginPage() {
             </p>
           </div>
           {/* Image Container */}
-          <div className="absolute inset-y-0 right-0 w-4/5 h-full z-0 overflow-hidden rounded-l-[4rem] shadow-xl ml-auto border-l border-outline-variant/30">
+          <div className="absolute inset-y-0 right-0 w-full h-full z-0 overflow-hidden shadow-xl ml-auto border-l border-outline-variant/30">
             <div className="absolute inset-0 bg-gradient-to-r from-surface-container-lowest to-transparent z-10"></div>
-            <div
-              className="w-full h-full bg-cover bg-center"
-              style={{
-                backgroundImage:
-                  "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCqS9DPjVO70OH_1k6xTSKuQ_4TGrPRCdWGP5PASJd0QcQCJDUYADu2KQ6rGaVT5lDhHpGz7HvWtNzT3KKdLGqyTE8dZsr3KH4Ib1_hCX7T3og6eFYKwvssO394_KlvihchWPCmhy2is4T99KxkRMHIOFNd6tt2R_gEn-0KA_yMdEI8gOSxegoLPwIA4VsGRuh_H6J5rFKn1ioiv_wm1ZYOFxZdq4B2aD1_vE839sCRYUfu5_4VvQsLcg')",
-              }}
+            <Image
+              src="/bg.jpg"
+              alt="Background"
+              fill
+              className="object-cover"
+              priority
             />
           </div>
         </section>
 
         {/* Right Side: Login Form */}
-        <section className="w-full lg:w-1/2 flex items-center justify-center p-[16px] md:p-[64px] bg-surface-container-lowest relative z-20 overflow-y-auto">
-          <div className="w-full max-w-[420px] bg-surface-container-lowest rounded-lg p-[48px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-outline-variant/20 relative">
+        <section className="w-full lg:w-1/2 flex items-center justify-center p-[16px] sm:p-[24px] lg:p-[64px] overflow-y-auto bg-surface-container-lowest relative z-20">
+          <div className="w-full max-w-[480px] bg-surface rounded-lg sm:bg-white sm:shadow-[0_4px_24px_rgba(0,0,0,0.02)] sm:border sm:border-outline-variant/30 sm:p-8 transition-all duration-300">
             {/* Mobile Logo */}
-            <div className="flex lg:hidden items-center gap-2 mb-[48px] justify-center">
+            <div className="flex items-center justify-center gap-2 mb-8 lg:hidden text-primary">
               <Image
                 src="/web-app-manifest-512x512.png"
                 alt="UniEvent Logo"
-                width={28}
-                height={28}
+                width={32}
+                height={32}
               />
-              <span className="font-headline-sm text-headline-md text-primary">
+              <span className="font-headline-sm text-headline-md font-bold">
                 UniEvent
               </span>
             </div>
 
-            <div className="mb-[80px] text-center">
-              <h2 className="font-headline-lg text-headline-lg text-on-surface">
+            {/* Form Header */}
+            <div className="mb-8 text-center sm:text-left">
+              <h2 className="font-headline-lg-mobile sm:font-headline-lg text-headline-lg-mobile sm:text-headline-lg text-on-surface mb-2">
                 Welcome Back
               </h2>
-              <p className="font-body-md text-body-md text-on-surface-variant mt-[12px]">
+              <p className="font-body-md text-body-md text-on-surface-variant">
                 Please sign in to your account.
+              </p>
+              <p className="font-body-md text-body-md text-on-surface-variant mt-[4px]">
+                (Testing: For admin access login through - admin@test.com |
+                Admin1234)
               </p>
             </div>
 
             <AuthAlert serverError={state?.error} />
 
-            <form action={formAction} className="flex flex-col gap-[24px]">
+            <form action={formAction} className="space-y-5">
               {/* Email Input */}
               <div>
                 <label
@@ -143,13 +148,20 @@ export default function LoginPage() {
               </div>
 
               {/* Sign In Button */}
-              <button
-                className="w-full bg-secondary text-on-secondary font-label-md text-label-md py-[12px] rounded hover:shadow-[inset_0_4px_12px_rgba(255,255,255,0.2)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 mt-[12px] disabled:opacity-50 disabled:cursor-not-allowed"
-                type="submit"
-                disabled={pending}
-              >
-                {pending ? "Signing In..." : "Sign In"}
-              </button>
+              <div className="pt-4">
+                <button
+                  className="w-full flex justify-center items-center py-3.5 px-4 bg-secondary text-on-secondary font-label-md text-label-md rounded shadow-sm hover:shadow-md hover:bg-secondary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all active:scale-[0.98] group disabled:opacity-50 disabled:cursor-not-allowed"
+                  type="submit"
+                  disabled={pending}
+                >
+                  {pending ? "Signing In..." : "Sign In"}
+                  {!pending && (
+                    <span className="material-symbols-outlined ml-2 text-xl group-hover:translate-x-1 transition-transform">
+                      login
+                    </span>
+                  )}
+                </button>
+              </div>
             </form>
 
             <div className="flex items-center gap-[12px] my-[24px]">
@@ -163,7 +175,7 @@ export default function LoginPage() {
             {/* SSO Option */}
             <a
               href="/api/auth/google"
-              className="w-full bg-transparent border border-primary text-primary font-label-md text-label-md py-[12px] rounded hover:bg-primary/5 transition-colors flex items-center justify-center gap-[12px]"
+              className="w-full bg-transparent border border-primary text-primary font-label-md text-label-md py-3.5 rounded hover:bg-primary/5 transition-colors flex items-center justify-center gap-[12px]"
             >
               <svg
                 width="24"
@@ -189,18 +201,21 @@ export default function LoginPage() {
                   fill="#EA4335"
                 />
               </svg>
-              Sign in with Google
+              Continue with Google
             </a>
 
             {/* Registration Link */}
-            <div className="mt-[80px] text-center">
+            <div className="mt-8 text-center">
               <p className="font-body-md text-body-md text-on-surface-variant">
                 Don't have an account?{" "}
                 <Link
-                  className="text-primary font-label-md text-label-md hover:underline"
+                  className="font-label-md text-label-md text-primary hover:text-secondary transition-colors inline-flex items-center gap-1 ml-1 group"
                   href="/register"
                 >
                   Register here
+                  <span className="material-symbols-outlined text-sm group-hover:translate-x-0.5 transition-transform">
+                    person_add
+                  </span>
                 </Link>
               </p>
             </div>

@@ -19,12 +19,12 @@ export default function RegisterPage() {
         {/* Left Side: Inspirational Imagery (Hidden on smaller screens) */}
         <div className="hidden lg:flex lg:w-[45%] xl:w-1/2 relative bg-surface-container overflow-hidden items-end p-[64px]">
           {/* Background Image */}
-          <div
-            className="absolute inset-0 z-0 bg-cover bg-center"
-            style={{
-              backgroundImage:
-                'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDMvnOJROQCSy8BBr1Gafo8fSnIq4S1W8WVHfVkC8Qtnzp9RNRhRFfjbqfd6t53YnGh8kny8rkd-SoRNx8Gaqxnf6exfyp1YwQU8O-fFe2t8CB68YdnCTpWO4oHCaBkQrzybA-Mfjw8MnAnuStXlHLQkGjwF5hk1Y7yAn5saG28dFMoB9A3Vgt6xaD5ynIZqu8YCEwQFgsRrpsEsuO1fATGqDB8QlSB16Bw3CqNUfRD9OCNfQTdjBb2ug")',
-            }}
+          <Image
+            src="/bg-2.jpg"
+            alt="Background"
+            fill
+            className="object-cover z-0"
+            priority
           />
           {/* Gradient Overlay for text readability */}
           <div className="absolute inset-0 z-10 bg-gradient-to-t from-on-surface/80 via-on-surface/30 to-transparent"></div>
@@ -38,7 +38,7 @@ export default function RegisterPage() {
                 width={36}
                 height={36}
               />
-              <span className="font-headline-lg text-headline-lg font-bold tracking-tight">
+              <span className="text-primary font-headline-lg text-headline-lg font-bold tracking-tight">
                 UniEvent
               </span>
             </div>
@@ -288,7 +288,7 @@ export default function RegisterPage() {
                   fill="#EA4335"
                 />
               </svg>
-              Sign in with Google
+              Continue with Google
             </a>
 
             {/* Login Link */}

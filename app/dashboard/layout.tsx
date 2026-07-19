@@ -23,7 +23,7 @@ export default async function DashboardLayout({
     <SidebarProvider>
       <AppSidebar role={session?.role} />
       <SidebarInset className="pb-16 md:pb-0">
-        <TopNav user={user} />
+        <TopNav user={user} role={session?.role} />
         {children}
       </SidebarInset>
       <MobileBottomNav role={session?.role} />

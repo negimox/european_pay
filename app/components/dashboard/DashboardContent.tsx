@@ -8,6 +8,8 @@ import { toast } from "sonner";
 import { EventCard } from "@/app/components/dashboard/EventCard";
 import { AnnouncementsList } from "@/app/components/dashboard/AnnouncementsList";
 import { MyRegistrationsList } from "@/app/components/dashboard/MyRegistrationsList";
+import { LinkBreadcrumb } from "@/app/components/dashboard/LinkBreadcrumb";
+import { AnnouncementModal } from "@/app/components/dashboard/AnnouncementModal";
 import {
   Card,
   CardContent,
@@ -115,22 +117,7 @@ export function DashboardContent({
   return (
     <main className="flex-1 p-margin-mobile md:p-margin-desktop overflow-x-hidden bg-surface">
       {/* Breadcrumbs */}
-      <nav
-        aria-label="Breadcrumb"
-        className="font-display-sm flex items-center gap-xs font-label-md text-label-md text-on-surface-variant mb-lg"
-      >
-        <Link
-          href="/dashboard"
-          prefetch={false}
-          className="hover:text-primary transition-colors font-display-md"
-        >
-          Dashboard
-        </Link>
-        <span className="material-symbols-outlined text-sm">chevron_right</span>
-        <span className="text-on-surface font-medium truncate font-display-md">
-          Overview
-        </span>
-      </nav>
+      <LinkBreadcrumb items={[{ label: "Dashboard" }]} />
 
       {/* Greeting */}
       <section className="mb-lg select-none">
@@ -250,53 +237,14 @@ export function DashboardContent({
                 events.map((event) => (
                   <CarouselItem
                     key={event.id}
-                    className="pl-4 basis-[85%] md:basis-1/2 lg:basis-1/3"
+                    className="p-4 basis-[85%] md:basis-1/2 lg:basis-1/3"
                   >
-                    <Card
+                    <EventCard
+                      event={event}
                       onClick={() =>
                         router.push(`/dashboard/events/${event.id}`)
                       }
-                      className="h-full bg-surface-container-lowest border-outline-variant rounded-xl overflow-hidden shadow-[0_2px_4px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_16px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col group cursor-pointer p-0 select-none"
-                    >
-                      <div className="h-40 w-full relative overflow-hidden bg-surface-container flex items-center justify-center">
-                        <img
-                          src={event.bannerUrl || "/events/1.jpg"}
-                          alt={event.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                        <Badge className="absolute top-3 left-3 bg-tertiary-container text-on-tertiary-container font-label-sm text-label-sm shadow-sm">
-                          {event.category || "Event"}
-                        </Badge>
-                      </div>
-                      <CardHeader className="p-4 pb-2">
-                        <CardTitle className="font-headline-md text-headline-md text-on-surface line-clamp-2">
-                          {event.title}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="p-4 pt-0 mt-auto flex flex-col gap-2">
-                        <div className="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md">
-                          <span className="material-symbols-outlined text-[18px]">
-                            calendar_month
-                          </span>
-                          <span>
-                            {new Date(event.startAt).toLocaleDateString()}{" "}
-                            {new Date(event.startAt).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}{" "}
-                            <span className="font-medium text-primary">
-                              ({getRelativeTime(event.startAt)})
-                            </span>
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md">
-                          <span className="material-symbols-outlined text-[18px]">
-                            location_on
-                          </span>
-                          <span>{event.venue}</span>
-                        </div>
-                      </CardContent>
-                    </Card>
+                    />
                   </CarouselItem>
                 ))
               )}
@@ -329,21 +277,25 @@ export function DashboardContent({
                   </p>
                 ) : (
                   announcements.map((ann, idx) => (
-                    <div
-                      key={ann.id}
-                      className="p-4 rounded-lg hover:bg-surface-container-highest transition-colors cursor-pointer group select-none"
-                    >
-                      <div className="flex justify-between items-start mb-1">
-                        <h4 className="font-label-md text-label-md font-bold text-on-surface group-hover:text-primary transition-colors">
-                          {ann.title}
-                        </h4>
-                        <span className="font-label-sm text-label-sm text-on-surface-variant shrink-0 ml-2">
-                          {new Date(ann.createdAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <p className="font-body-md text-body-md text-on-surface-variant line-clamp-2">
-                        {ann.content}
-                      </p>
+                    <div key={ann.id} className="flex flex-col">
+                      <AnnouncementModal
+                        announcement={ann}
+                        trigger={
+                          <div className="p-4 rounded-lg hover:bg-surface-container-highest transition-colors cursor-pointer group select-none text-left">
+                            <div className="flex justify-between items-start mb-1">
+                              <h4 className="font-label-md text-label-md font-bold text-on-surface group-hover:text-primary transition-colors">
+                                {ann.title}
+                              </h4>
+                              <span className="font-label-sm text-label-sm text-on-surface-variant shrink-0 ml-2">
+                                {new Date(ann.createdAt).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <p className="font-body-md text-body-md text-on-surface-variant line-clamp-2">
+                              {ann.content}
+                            </p>
+                          </div>
+                        }
+                      />
                       {idx < announcements.length - 1 && (
                         <Separator className="mt-4 bg-outline-variant/50" />
                       )}

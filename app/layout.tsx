@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { Inter, Young_Serif } from "next/font/google";
+import { Pacifico, Quicksand } from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
-const inter = Inter({
-  variable: "--font-inter",
+
+const fontSans = Quicksand({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  variable: "--font-sans",
 });
 
-const young_serif = Young_Serif({
-  variable: "--font-young",
+const fontSerif = Pacifico({
   subsets: ["latin"],
+  variable: "--font-serif",
   weight: ["400"],
 });
 
@@ -29,11 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${young_serif.className} ${inter.className} h-full antialiased`}
-      suppressHydrationWarning
-    >
+    <html lang="en">
       <head>
         {/* Material Symbols */}
         <link
@@ -41,10 +37,10 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-full flex flex-col" suppressHydrationWarning>
-        <TooltipProvider>
-          {children}
-        </TooltipProvider>
+      <body
+        className={`${fontSans.variable} ${fontSerif.variable} min-h-full flex flex-col bg-background text-foreground`}
+      >
+        <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>
   );

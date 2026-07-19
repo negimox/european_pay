@@ -6,9 +6,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { LocationInput } from "./LocationInput";
+import EventMap from "@/app/components/events/EventMap";
 import { toast } from "sonner";
-import { CalendarIcon, Users, IndianRupee, Image as ImageIcon, FileText, Tag, Clock } from "lucide-react";
+import { CalendarIcon, Users, IndianRupee, Image as ImageIcon, FileText, Tag, Clock, Trash2 } from "lucide-react";
 import { format } from "date-fns";
+import {
+  Attachment,
+  AttachmentMedia,
+  AttachmentContent,
+  AttachmentTitle,
+  AttachmentDescription,
+  AttachmentActions,
+  AttachmentAction,
+} from "@/components/ui/attachment";
+import { DateTimePicker } from "@/components/datetime-picker";
 
 type EventCategory = "ACADEMIC" | "CULTURAL" | "SPORTS" | "TECHNICAL" | "WORKSHOP" | "SOCIAL" | "OTHER";
 
@@ -20,21 +31,81 @@ export function AdminEventForm({ initialData }: { initialData?: any }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [venue, setVenue] = useState(initialData?.venue || "");
+  const [bannerUrl, setBannerUrl] = useState(initialData?.bannerUrl || "");
+  const [uploadingBanner, setUploadingBanner] = useState(false);
+  const [uploadFileName, setUploadFileName] = useState("");
+
+  const [startAt, setStartAt] = useState<Date | undefined>(initialData?.startAt ? new Date(initialData.startAt) : undefined);
+  const [endAt, setEndAt] = useState<Date | undefined>(initialData?.endAt ? new Date(initialData.endAt) : undefined);
+  const [registrationDeadline, setRegistrationDeadline] = useState<Date | undefined>(initialData?.registrationDeadline ? new Date(initialData.registrationDeadline) : undefined);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadFileName(file.name);
+    setUploadingBanner(true);
+    try {
+      const { supabase } = await import('@/lib/supabaseClient');
+      
+      // Ensure file name is unique
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+      const filePath = `events/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('unievents') // assuming 'unievents' bucket exists
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data } = supabase.storage
+        .from('unievents')
+        .getPublicUrl(filePath);
+
+      setBannerUrl(data.publicUrl);
+      toast.success("Image uploaded successfully");
+    } catch (error: any) {
+      toast.error(error.message || "Error uploading image");
+    } finally {
+      setUploadingBanner(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
+    if (!startAt || !endAt || !registrationDeadline) {
+      toast.error("Please fill in all date and time fields");
+      setLoading(false);
+      return;
+    }
+
+    if (registrationDeadline > startAt) {
+      toast.error("Registration deadline must be on or before the event start time");
+      setLoading(false);
+      return;
+    }
+
+    if (endAt <= startAt) {
+      toast.error("Event end time must be after the start time");
+      setLoading(false);
+      return;
+    }
+
     const formData = new FormData(e.currentTarget);
     const payload = {
       title: formData.get("title"),
       description: formData.get("description"),
-      bannerUrl: formData.get("bannerUrl") || "/events/1.jpg",
+      bannerUrl: bannerUrl || "/events/1.jpg",
       category: formData.get("category"),
       venue,
-      startAt: formData.get("startAt"),
-      endAt: formData.get("endAt"),
-      registrationDeadline: formData.get("registrationDeadline"),
+      startAt: startAt.toISOString(),
+      endAt: endAt.toISOString(),
+      registrationDeadline: registrationDeadline.toISOString(),
       capacity: formData.get("capacity"),
       fees: formData.get("fees"),
     };
@@ -64,12 +135,7 @@ export function AdminEventForm({ initialData }: { initialData?: any }) {
     }
   };
 
-  const formatDateForInput = (dateString?: string) => {
-    if (!dateString) return "";
-    const d = new Date(dateString);
-    // Format to YYYY-MM-DDThh:mm
-    return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-  };
+
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant shadow-sm">
@@ -120,77 +186,6 @@ export function AdminEventForm({ initialData }: { initialData?: any }) {
               <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
             </div>
           </div>
-
-          {/* Venue */}
-          <LocationInput 
-            name="venue" 
-            label="Venue (OpenStreetMap)" 
-            placeholder="Search location..." 
-            value={venue}
-            onChange={setVenue}
-          />
-
-          {/* Start Time */}
-          <div className="space-y-2 relative">
-            <label className="text-sm font-medium text-foreground">Start Time *</label>
-            <div className="relative">
-              <Input 
-                required 
-                type="datetime-local"
-                name="startAt" 
-                defaultValue={formatDateForInput(initialData?.startAt)} 
-                className="pl-10 pr-3 py-2 w-full"
-              />
-              <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
-            </div>
-          </div>
-
-          {/* End Time */}
-          <div className="space-y-2 relative">
-            <label className="text-sm font-medium text-foreground">End Time *</label>
-            <div className="relative">
-              <Input 
-                required 
-                type="datetime-local"
-                name="endAt" 
-                defaultValue={formatDateForInput(initialData?.endAt)} 
-                className="pl-10 pr-3 py-2 w-full"
-              />
-              <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
-            </div>
-          </div>
-
-          {/* Registration Deadline */}
-          <div className="space-y-2 relative">
-            <label className="text-sm font-medium text-foreground">Registration Deadline *</label>
-            <div className="relative">
-              <Input 
-                required 
-                type="datetime-local"
-                name="registrationDeadline" 
-                defaultValue={formatDateForInput(initialData?.registrationDeadline)} 
-                className="pl-10 pr-3 py-2 w-full"
-              />
-              <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
-            </div>
-          </div>
-
-          {/* Capacity */}
-          <div className="space-y-2 relative">
-            <label className="text-sm font-medium text-foreground">Total Capacity (Seats) *</label>
-            <div className="relative">
-              <Input 
-                required 
-                type="number"
-                min="1"
-                name="capacity" 
-                defaultValue={initialData?.capacity}
-                placeholder="e.g. 100" 
-                className="pl-10 pr-3 py-2 w-full"
-              />
-              <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
-            </div>
-          </div>
           
           {/* Fees */}
           <div className="space-y-2 relative">
@@ -210,19 +205,122 @@ export function AdminEventForm({ initialData }: { initialData?: any }) {
             </div>
           </div>
 
-          {/* Banner URL (Mocked since no storage) */}
+          {/* Start Time */}
           <div className="space-y-2 relative">
-            <label className="text-sm font-medium text-foreground">Banner Image URL</label>
+            <label className="text-sm font-medium text-foreground">Start Time *</label>
+            <DateTimePicker 
+              value={startAt}
+              onChange={setStartAt}
+              use12HourFormat
+            />
+          </div>
+
+          {/* End Time */}
+          <div className="space-y-2 relative">
+            <label className="text-sm font-medium text-foreground">End Time *</label>
+            <DateTimePicker 
+              value={endAt}
+              onChange={setEndAt}
+              min={startAt}
+              use12HourFormat
+            />
+          </div>
+
+          {/* Registration Deadline */}
+          <div className="space-y-2 relative">
+            <label className="text-sm font-medium text-foreground">Registration Deadline *</label>
+            <DateTimePicker 
+              value={registrationDeadline}
+              onChange={setRegistrationDeadline}
+              max={startAt}
+              use12HourFormat
+            />
+          </div>
+
+          {/* Capacity */}
+          <div className="space-y-2 relative">
+            <label className="text-sm font-medium text-foreground">Total Capacity (Seats) *</label>
             <div className="relative">
               <Input 
-                type="url"
-                name="bannerUrl" 
-                defaultValue={initialData?.bannerUrl}
-                placeholder="https://example.com/image.jpg" 
+                required 
+                type="number"
+                min="1"
+                name="capacity" 
+                defaultValue={initialData?.capacity}
+                placeholder="e.g. 100" 
                 className="pl-10 pr-3 py-2 w-full"
               />
-              <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
+              <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
             </div>
+          </div>
+
+          {/* Banner URL */}
+          <div className="space-y-2 relative md:col-span-2">
+            <label className="text-sm font-medium text-foreground">Banner Image *</label>
+            
+            {!bannerUrl && !uploadingBanner ? (
+              <div className="relative">
+                <Input 
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="pl-10 py-2 w-full file:bg-transparent file:border-0 file:text-sm file:font-medium text-foreground"
+                />
+                <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
+              </div>
+            ) : (
+              <div className="flex gap-4 items-start flex-col">
+                <Attachment state={uploadingBanner ? "uploading" : "done"}>
+                  <AttachmentMedia variant={bannerUrl ? "image" : "icon"}>
+                    {bannerUrl ? (
+                      <img src={bannerUrl} alt="Banner" />
+                    ) : (
+                      <ImageIcon className="w-5 h-5 text-muted-foreground" />
+                    )}
+                  </AttachmentMedia>
+                  <AttachmentContent>
+                    <AttachmentTitle>
+                      {uploadingBanner ? uploadFileName : bannerUrl.split('/').pop()}
+                    </AttachmentTitle>
+                    <AttachmentDescription>
+                      {uploadingBanner ? "Uploading to Supabase Storage..." : "Banner uploaded successfully."}
+                    </AttachmentDescription>
+                  </AttachmentContent>
+                  {bannerUrl && !uploadingBanner && (
+                    <AttachmentActions>
+                      <AttachmentAction
+                        variant="ghost"
+                        type="button"
+                        onClick={() => setBannerUrl("")}
+                      >
+                        <Trash2 className="w-4 h-4 text-destructive" />
+                      </AttachmentAction>
+                    </AttachmentActions>
+                  )}
+                </Attachment>
+                <Input 
+                  type="hidden"
+                  name="bannerUrl"
+                  value={bannerUrl}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Venue */}
+          <div className="space-y-4 md:col-span-2">
+            <LocationInput 
+              name="venue" 
+              label="Venue (OpenStreetMap) *" 
+              placeholder="Search location..." 
+              value={venue}
+              onChange={setVenue}
+            />
+            {venue && (
+              <div className="h-72 rounded-xl overflow-hidden border border-outline-variant shadow-sm relative isolate z-0">
+                <EventMap venue={venue} />
+              </div>
+            )}
           </div>
         </div>
 
@@ -230,7 +328,7 @@ export function AdminEventForm({ initialData }: { initialData?: any }) {
       
       <div className="flex justify-end gap-3 pt-4 border-t border-outline-variant">
         <Button type="button" variant="outline" onClick={() => router.back()}>Cancel</Button>
-        <Button type="submit" disabled={loading}>
+        <Button type="submit" disabled={loading || uploadingBanner}>
           {loading ? "Saving..." : initialData ? "Update Event" : "Publish Event"}
         </Button>
       </div>

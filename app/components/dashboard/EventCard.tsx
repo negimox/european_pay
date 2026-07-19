@@ -1,7 +1,8 @@
 import Image from "next/image";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { cn } from "@/lib/utils";
 
 interface EventProps {
   event: {
@@ -13,40 +14,37 @@ interface EventProps {
     venue: string;
     capacity: number;
     bannerUrl: string | null;
+    fees?: number;
     _count?: {
       registrations: number;
     };
   };
   isRegistered?: boolean;
-  onRegister?: (id: string) => void;
-  onCancel?: (id: string) => void;
-  loading?: boolean;
+  onClick?: () => void;
+  className?: string;
+  onCancel?: (eventId: string) => void;
 }
 
 export function EventCard({
   event,
   isRegistered = false,
-  onRegister,
+  onClick,
+  className,
   onCancel,
-  loading = false,
 }: EventProps) {
-  const date = new Date(event.startAt).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
-
   const getRelativeTime = (dateStr: string) => {
     const eventDate = new Date(dateStr);
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const target = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
-    
+    const target = new Date(
+      eventDate.getFullYear(),
+      eventDate.getMonth(),
+      eventDate.getDate(),
+    );
+
     const diffTime = target.getTime() - today.getTime();
     const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) return "Today";
     if (diffDays === 1) return "Tomorrow";
     if (diffDays === -1) return "Yesterday";
@@ -56,81 +54,136 @@ export function EventCard({
   };
 
   const registrationsCount = event._count?.registrations || 0;
-  const isFull = registrationsCount >= event.capacity;
-  const availableSeats = event.capacity - registrationsCount;
 
   return (
-    <Card className="flex flex-col overflow-hidden transition-all hover:shadow-md border-outline-variant/30 bg-surface select-none">
-      <div className="relative w-full h-48 bg-surface-container-high">
-        {event.bannerUrl ? (
-          <Image
-            src={event.bannerUrl}
-            alt={event.title}
-            fill
-            className="object-cover"
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-on-surface-variant/50">
-            <span className="material-symbols-outlined text-[64px]">
-              event
-            </span>
+    <Card
+      onClick={onClick}
+      className={cn(
+        "p-0 gap-0 h-full flex flex-col transition-all duration-300 hover:scale-[0.98] border-0 bg-transparent select-none cursor-pointer group shadow-none ring-0 focus-visible:ring-offset-0",
+        className,
+      )}
+    >
+      <div className="relative w-full bg-gray-100 overflow-hidden rounded-[20px]">
+        <AspectRatio ratio={16 / 10}>
+          {event.bannerUrl ? (
+            <Image
+              src={event.bannerUrl}
+              alt={event.title}
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+              <span className="material-symbols-outlined text-[64px]">
+                event
+              </span>
+            </div>
+          )}
+        </AspectRatio>
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            // Optional: Implement share logic here
+          }}
+          className="absolute top-3 right-3 w-[34px] h-[34px] rounded-full bg-black/40 flex items-center justify-center hover:bg-black/60 transition-colors backdrop-blur-md z-10"
+        >
+          <span className="material-symbols-outlined text-white text-[20px] ml-[1px]">
+            ios_share
+          </span>
+        </button>
+
+        {isRegistered && (
+          <div className="absolute top-3 left-3 z-10">
+            <Badge className="bg-green-600/90 backdrop-blur-sm text-white hover:bg-green-600 font-medium text-[11px] shadow-sm gap-1 border-0 px-2.5 py-4">
+              <span
+                className="material-symbols-outlined text-[12px]"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                check_circle
+              </span>
+              Registered
+            </Badge>
           </div>
         )}
-        <div className="absolute top-4 left-4">
-          <Badge variant="secondary" className="bg-surface/90 backdrop-blur-sm text-on-surface">
-            {event.category}
-          </Badge>
-        </div>
       </div>
 
-      <CardHeader className="pb-4">
-        <h3 className="font-headline-sm text-headline-sm font-bold text-on-surface line-clamp-1">
-          {event.title}
-        </h3>
-        <p className="font-body-md text-body-md text-on-surface-variant line-clamp-2 mt-2">
-          {event.description}
-        </p>
-      </CardHeader>
+      <div className="py-3 flex flex-col flex-1">
+        <CardHeader className="p-0 space-y-0">
+          <CardTitle className="font-bold text-[17px] leading-[1.3] text-gray-900 dark:text-gray-100 line-clamp-2">
+            {event.title}
+          </CardTitle>
+        </CardHeader>
 
-      <CardContent className="flex-1 pb-4">
-        <div className="space-y-3 font-body-sm text-body-sm text-on-surface-variant">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[20px] text-primary">calendar_today</span>
-            <span>{date} <span className="font-medium text-primary">({getRelativeTime(event.startAt)})</span></span>
+        <CardContent className="p-0 mt-1.5 flex flex-col flex-1">
+          <div className="flex flex-col gap-[3px] text-[13.5px] text-gray-500 dark:text-gray-400">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="flex items-center">
+                <span className="material-symbols-outlined pr-2.5">
+                  calendar_clock
+                </span>
+                {new Date(event.startAt).toLocaleDateString("en-US", {
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                })}
+                {" • "}
+                {new Date(event.startAt).toLocaleTimeString("en-US", {
+                  hour: "numeric",
+                  minute: "2-digit",
+                  timeZoneName: "short",
+                })}
+              </span>
+              {event.venue.toLowerCase().includes("online") && (
+                <>
+                  <span className="text-[10px]">•</span>
+                  <div className="flex items-center gap-1 px-1.5 py-[2px] bg-gray-100 dark:bg-gray-800 rounded-md text-[11px] font-semibold text-gray-800 dark:text-gray-200">
+                    <span className="material-symbols-outlined text-[12px] !leading-none">
+                      videocam
+                    </span>
+                    Online
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="truncate flex items-center">
+              <span className="material-symbols-outlined pr-2.5">category</span>{" "}
+              {event.category || event.venue}
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[20px] text-primary">location_on</span>
-            <span>{event.venue}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[20px] text-primary">group</span>
-            <span>
-              {availableSeats} / {event.capacity} seats available
+
+          <div className="flex items-center gap-2 mt-auto pt-3">
+            {registrationsCount > 0 ? (
+              <div className="flex -space-x-1.5">
+                {[...Array(Math.min(registrationsCount, 3))].map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-[26px] h-[26px] rounded-full  dark:bg-gray-700 border-2  dark:border-gray-950 flex items-center justify-center overflow-hidden z-10"
+                    style={{ zIndex: 3 - i }}
+                  >
+                    <img
+                      src={`https://api.dicebear.com/7.x/notionists/svg?seed=${event.id}-${i}&backgroundColor=e2e8f0`}
+                      alt="avatar"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="w-[26px] h-[26px] rounded-full  dark:bg-gray-800 border-2  dark:border-gray-950 flex items-center justify-center z-10">
+                <span className="material-symbols-outlined text-[14px] text-gray-400">
+                  person_off
+                </span>
+              </div>
+            )}
+            <span className="text-[14px] font-bold text-gray-900">
+              {registrationsCount}{" "}
+              {registrationsCount === 1 ? "attendee" : "attendees"}
             </span>
           </div>
-        </div>
-      </CardContent>
-
-      <CardFooter className="pt-0">
-        {isRegistered ? (
-          <Button
-            variant="destructive"
-            className="w-full font-label-lg select-none"
-            onClick={() => onCancel?.(event.id)}
-            disabled={loading}
-          >
-            Cancel Registration
-          </Button>
-        ) : (
-          <Button
-            className="w-full font-label-lg select-none"
-            onClick={() => onRegister?.(event.id)}
-            disabled={isFull || loading}
-          >
-            {isFull ? "Fully Booked" : "Register Now"}
-          </Button>
-        )}
-      </CardFooter>
+        </CardContent>
+      </div>
     </Card>
   );
 }
