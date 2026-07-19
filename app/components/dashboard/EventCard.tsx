@@ -20,6 +20,7 @@ interface EventProps {
     venue: string;
     capacity: number;
     bannerUrl: string | null;
+    registrationDeadline?: string;
     fees?: number;
     _count?: {
       registrations: number;
@@ -60,6 +61,8 @@ export function EventCard({
     if (diffDays < -1) return `${Math.abs(diffDays)} days ago`;
     return "";
   };
+
+  const isDeadlinePassed = event.registrationDeadline ? new Date(event.registrationDeadline) < new Date() : false;
 
   const registrationsCount = event._count?.registrations || 0;
 
@@ -105,7 +108,7 @@ export function EventCard({
           </ShareModal>
         </div>
 
-        {isRegistered && (
+        {isRegistered ? (
           <div className="absolute top-3 left-3 z-10">
             <Badge className="bg-green-600/90 backdrop-blur-sm text-white hover:bg-green-600 font-medium text-[11px] shadow-sm gap-1 border-0 px-2.5 py-4">
               <span
@@ -117,7 +120,19 @@ export function EventCard({
               Registered
             </Badge>
           </div>
-        )}
+        ) : isDeadlinePassed ? (
+          <div className="absolute top-3 left-3 z-10">
+            <Badge className="bg-gray-600/90 backdrop-blur-sm text-white hover:bg-gray-600 font-medium text-[11px] shadow-sm gap-1 border-0 px-2.5 py-4">
+              <span
+                className="material-symbols-outlined text-[12px]"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                schedule
+              </span>
+              Deadline Passed
+            </Badge>
+          </div>
+        ) : null}
       </div>
 
       <div className="py-3 flex flex-col flex-1">

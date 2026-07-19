@@ -452,10 +452,10 @@ export default function EventDetailsPage({
                 onClick={() =>
                   router.push(`/dashboard/events/${resolvedParams.id}/register`)
                 }
-                disabled={isFull}
+                disabled={isFull || new Date(event.registrationDeadline) < new Date()}
                 className="rounded-xl px-8 py-6 text-[15px] font-bold shadow-md"
               >
-                {isFull ? "Event Full" : "Register"}
+                {new Date(event.registrationDeadline) < new Date() ? "Deadline Passed" : isFull ? "Event Full" : "Register"}
               </Button>
             ) : (
               <Button
