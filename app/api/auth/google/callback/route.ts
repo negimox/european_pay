@@ -75,6 +75,7 @@ export async function GET(request: Request) {
           lastName: family_name || name?.split(" ").slice(1).join(" ") || null,
           avatarUrl: picture,
           role: Role.STUDENT,
+          isVerified: true,
         },
       });
     } else {

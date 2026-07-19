@@ -38,6 +38,7 @@ model User {
   passwordHash String?
   role         Role     @default(STUDENT)
   avatarUrl    String?
+  isVerified   Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -115,4 +116,13 @@ model Announcement {
   @@index([publishedById])
   @@index([createdAt])
   @@map("announcements")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
 }

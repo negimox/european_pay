@@ -80,176 +80,187 @@ export default function RegisterPage() {
 
             <AuthAlert serverError={state?.error} />
 
-            {/* Registration Form */}
-            <form action={formAction} className="space-y-5">
-              <div className="flex gap-4">
-                {/* First Name */}
-                <div className="flex-1">
+            {state?.successMessage ? (
+              <div className="bg-primary/10 border border-primary text-primary p-6 rounded-lg text-center">
+                <span className="material-symbols-outlined text-4xl mb-2">check_circle</span>
+                <h3 className="font-headline-sm text-headline-sm mb-2">Registration Successful</h3>
+                <p className="font-body-md text-body-md mb-2">{state.successMessage}</p>
+                <p className="font-body-sm text-body-sm text-on-surface-variant bg-surface p-3 rounded border border-outline-variant/30 inline-block mt-2">
+                  <span className="material-symbols-outlined text-sm align-middle mr-1">info</span>
+                  Please wait ~5 mins and check your spam folder as well.
+                </p>
+              </div>
+            ) : (
+              <form action={formAction} className="space-y-5">
+                <div className="flex gap-4">
+                  {/* First Name */}
+                  <div className="flex-1">
+                    <label
+                      className="block font-label-md text-label-md text-on-surface mb-[4px]"
+                      htmlFor="firstName"
+                    >
+                      First Name
+                    </label>
+                    <div className="relative">
+                      <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">
+                        person
+                      </span>
+                      <input
+                        className="w-full pl-10 pr-3 py-3 rounded-lg border border-outline-variant bg-surface-bright text-on-surface font-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+                        id="firstName"
+                        name="firstName"
+                        placeholder="Jane"
+                        required
+                        type="text"
+                      />
+                    </div>
+                    {state?.fieldErrors?.firstName && (
+                      <p className="mt-1 text-xs text-error">
+                        {state.fieldErrors.firstName[0]}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Last Name */}
+                  <div className="flex-1">
+                    <label
+                      className="block font-label-md text-label-md text-on-surface mb-[4px]"
+                      htmlFor="lastName"
+                    >
+                      Last Name
+                    </label>
+                    <div className="relative">
+                      <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">
+                        person
+                      </span>
+                      <input
+                        className="w-full pl-10 pr-3 py-3 rounded-lg border border-outline-variant bg-surface-bright text-on-surface font-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+                        id="lastName"
+                        name="lastName"
+                        placeholder="Doe"
+                        type="text"
+                      />
+                    </div>
+                    {state?.fieldErrors?.lastName && (
+                      <p className="mt-1 text-xs text-error">
+                        {state.fieldErrors.lastName[0]}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* University Email */}
+                <div>
                   <label
                     className="block font-label-md text-label-md text-on-surface mb-[4px]"
-                    htmlFor="firstName"
+                    htmlFor="email"
                   >
-                    First Name
+                    University Email
                   </label>
                   <div className="relative">
                     <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">
-                      person
+                      mail
                     </span>
                     <input
                       className="w-full pl-10 pr-3 py-3 rounded-lg border border-outline-variant bg-surface-bright text-on-surface font-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none"
-                      id="firstName"
-                      name="firstName"
-                      placeholder="Jane"
+                      id="email"
+                      name="email"
+                      placeholder="jane.doe@university.edu"
                       required
-                      type="text"
+                      type="email"
                     />
                   </div>
-                  {state?.fieldErrors?.firstName && (
+                  {state?.fieldErrors?.email && (
                     <p className="mt-1 text-xs text-error">
-                      {state.fieldErrors.firstName[0]}
+                      {state.fieldErrors.email[0]}
                     </p>
                   )}
                 </div>
 
-                {/* Last Name */}
-                <div className="flex-1">
+                {/* Password */}
+                <div>
                   <label
                     className="block font-label-md text-label-md text-on-surface mb-[4px]"
-                    htmlFor="lastName"
+                    htmlFor="password"
                   >
-                    Last Name
+                    Password
                   </label>
                   <div className="relative">
                     <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">
-                      person
+                      lock
                     </span>
                     <input
                       className="w-full pl-10 pr-3 py-3 rounded-lg border border-outline-variant bg-surface-bright text-on-surface font-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none"
-                      id="lastName"
-                      name="lastName"
-                      placeholder="Doe"
-                      type="text"
+                      id="password"
+                      name="password"
+                      placeholder="••••••••"
+                      required
+                      type="password"
                     />
                   </div>
-                  {state?.fieldErrors?.lastName && (
+                  {state?.fieldErrors?.password && (
                     <p className="mt-1 text-xs text-error">
-                      {state.fieldErrors.lastName[0]}
+                      {state.fieldErrors.password[0]}
                     </p>
                   )}
                 </div>
-              </div>
 
-              {/* University Email */}
-              <div>
-                <label
-                  className="block font-label-md text-label-md text-on-surface mb-[4px]"
-                  htmlFor="email"
-                >
-                  University Email
-                </label>
-                <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">
-                    mail
-                  </span>
-                  <input
-                    className="w-full pl-10 pr-3 py-3 rounded-lg border border-outline-variant bg-surface-bright text-on-surface font-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none"
-                    id="email"
-                    name="email"
-                    placeholder="jane.doe@university.edu"
-                    required
-                    type="email"
-                  />
-                </div>
-                {state?.fieldErrors?.email && (
-                  <p className="mt-1 text-xs text-error">
-                    {state.fieldErrors.email[0]}
-                  </p>
-                )}
-              </div>
-
-              {/* Password */}
-              <div>
-                <label
-                  className="block font-label-md text-label-md text-on-surface mb-[4px]"
-                  htmlFor="password"
-                >
-                  Password
-                </label>
-                <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">
-                    lock
-                  </span>
-                  <input
-                    className="w-full pl-10 pr-3 py-3 rounded-lg border border-outline-variant bg-surface-bright text-on-surface font-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none"
-                    id="password"
-                    name="password"
-                    placeholder="••••••••"
-                    required
-                    type="password"
-                  />
-                </div>
-                {state?.fieldErrors?.password && (
-                  <p className="mt-1 text-xs text-error">
-                    {state.fieldErrors.password[0]}
-                  </p>
-                )}
-              </div>
-
-              {/* Terms Checkbox */}
-              <div className="flex items-start mt-6">
-                <div className="flex items-center h-5">
-                  <input
-                    className="w-5 h-5 bg-surface-bright border-outline-variant rounded text-secondary focus:ring-secondary focus:ring-offset-surface cursor-pointer"
-                    id="terms"
-                    name="terms"
-                    required
-                    type="checkbox"
-                  />
-                </div>
-                <div className="ml-3">
-                  <label
-                    className="font-body-md text-body-md text-on-surface-variant cursor-pointer"
-                    htmlFor="terms"
-                  >
-                    I agree to the{" "}
-                    <LegalModal
-                      type="terms"
-                      trigger={
-                        <span className="font-medium text-secondary hover:text-primary transition-colors underline decoration-secondary/30 underline-offset-2">
-                          Terms of Service
-                        </span>
-                      }
-                    />{" "}
-                    and{" "}
-                    <LegalModal
-                      type="privacy"
-                      trigger={
-                        <span className="font-medium text-secondary hover:text-primary transition-colors underline decoration-secondary/30 underline-offset-2">
-                          Privacy Policy
-                        </span>
-                      }
+                {/* Terms Checkbox */}
+                <div className="flex items-start mt-6">
+                  <div className="flex items-center h-5">
+                    <input
+                      className="w-5 h-5 bg-surface-bright border-outline-variant rounded text-secondary focus:ring-secondary focus:ring-offset-surface cursor-pointer"
+                      id="terms"
+                      name="terms"
+                      required
+                      type="checkbox"
                     />
-                    .
-                  </label>
+                  </div>
+                  <div className="ml-3">
+                    <label
+                      className="font-body-md text-body-md text-on-surface-variant cursor-pointer"
+                      htmlFor="terms"
+                    >
+                      I agree to the{" "}
+                      <LegalModal
+                        type="terms"
+                        trigger={
+                          <span className="font-medium text-secondary hover:text-primary transition-colors underline decoration-secondary/30 underline-offset-2">
+                            Terms of Service
+                          </span>
+                        }
+                      />{" "}
+                      and{" "}
+                      <LegalModal
+                        type="privacy"
+                        trigger={
+                          <span className="font-medium text-secondary hover:text-primary transition-colors underline decoration-secondary/30 underline-offset-2">
+                            Privacy Policy
+                          </span>
+                        }
+                      />
+                      .
+                    </label>
+                  </div>
                 </div>
-              </div>
 
-              {/* Submit Button */}
-              <div className="pt-4">
-                <button
-                  className="w-full flex justify-center items-center py-3.5 px-4 bg-secondary text-on-secondary font-label-md text-label-md rounded shadow-sm hover:shadow-md hover:bg-secondary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all active:scale-[0.98] group disabled:opacity-50 disabled:cursor-not-allowed"
-                  type="submit"
-                  disabled={pending}
-                >
-                  {pending ? "Creating Account..." : "Create Account"}
-                  {!pending && (
-                    <span className="material-symbols-outlined ml-2 text-xl group-hover:translate-x-1 transition-transform">
-                      arrow_forward
-                    </span>
-                  )}
-                </button>
-              </div>
-            </form>
+                {/* Submit Button */}
+                <div className="pt-4">
+                  <button
+                    className="w-full flex justify-center items-center py-3.5 px-4 bg-secondary text-on-secondary font-label-md text-label-md rounded shadow-sm hover:shadow-md hover:bg-secondary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all active:scale-[0.98] group disabled:opacity-50 disabled:cursor-not-allowed"
+                    type="submit"
+                    disabled={pending}
+                  >
+                    {pending ? "Creating Account..." : "Create Account"}
+                    {!pending && (
+                      <span className="material-symbols-outlined ml-2 text-xl group-hover:translate-x-1 transition-transform">
+                        arrow_forward
+                      </span>
+                    )}
+                  </button>
+                </div>
+              </form>
+            )}
 
             <div className="flex items-center gap-[12px] my-[24px]">
               <div className="h-px bg-outline-variant flex-1"></div>

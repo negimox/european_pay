@@ -6,6 +6,8 @@ import { prisma } from "@/lib/prisma";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { createSession, deleteSession } from "@/lib/auth/session";
 import { Role } from "@prisma/client";
+import { v4 as uuidv4 } from "uuid";
+import { sendVerificationEmail } from "@/lib/email/sendgrid";
 
 // ─── Validation Schemas ───────────────────────────────────────────────────────
 
@@ -36,6 +38,7 @@ const signInSchema = z.object({
 export interface AuthActionState {
   error?: string;
   fieldErrors?: Record<string, string[]>;
+  successMessage?: string;
 }
 
 // ─── Sign Up ─────────────────────────────────────────────────────────────────
@@ -72,12 +75,27 @@ export async function signUp(
       lastName: lastName ? lastName : null, 
       email, 
       passwordHash, 
-      role: Role.STUDENT 
+      role: Role.STUDENT,
+      isVerified: false
     },
   });
 
-  await createSession(user.id, user.role);
-  redirect("/dashboard");
+  const token = uuidv4();
+  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+  await prisma.verificationToken.create({
+    data: {
+      identifier: email,
+      token,
+      expires,
+    }
+  });
+
+  const baseUrl = 'https://european-pay.vercel.app';
+  
+  await sendVerificationEmail(email, token, baseUrl);
+
+  return { successMessage: "Registration successful! Please check your email to verify your account before logging in." };
 }
 
 // ─── Sign In ─────────────────────────────────────────────────────────────────
@@ -107,6 +125,10 @@ export async function signIn(
   // If user exists but has no password hash, they registered via SSO.
   if (!user.passwordHash) {
     return { error: "This account uses Google SSO. Please sign in with Google." };
+  }
+
+  if (!user.isVerified) {
+    return { error: "Please verify your email address before logging in." };
   }
 
   // Use constant-time comparison pattern — don't reveal whether user exists
