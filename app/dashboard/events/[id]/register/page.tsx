@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import { LinkBreadcrumb } from "@/app/components/dashboard/LinkBreadcrumb";
 
 const REDIRECT_DELAY = 5; // seconds
