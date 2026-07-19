@@ -9,12 +9,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { LinkBreadcrumb } from "@/app/components/dashboard/LinkBreadcrumb";
+import { EventCard } from "@/app/components/dashboard/EventCard";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Dynamically import the map to avoid SSR issues with Leaflet
 const EventMap = dynamic(() => import("@/app/components/events/EventMap"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[220px] rounded-xl bg-surface-container border border-outline-variant flex items-center justify-center">
+    <div className="w-full h-full flex items-center justify-center">
       <div className="flex items-center gap-2 text-on-surface-variant text-sm">
         <span className="material-symbols-outlined text-[18px] animate-spin">
           progress_activity
@@ -33,6 +36,7 @@ export default function EventDetailsPage({
   const resolvedParams = use(params);
   const router = useRouter();
   const [event, setEvent] = useState<any>(null);
+  const [relatedEvents, setRelatedEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isRegistered, setIsRegistered] = useState(false);
 
@@ -49,6 +53,14 @@ export default function EventDetailsPage({
         const found = data.events?.find((e: any) => e.id === resolvedParams.id);
         if (found) {
           setEvent(found);
+          let related =
+            data.events?.filter(
+              (e: any) => e.category === found.category && e.id !== found.id,
+            ) || [];
+          if (related.length === 0) {
+            related = data.events?.filter((e: any) => e.id !== found.id) || [];
+          }
+          setRelatedEvents(related.slice(0, 2));
         } else {
           toast.error("Event not found");
         }
@@ -133,267 +145,255 @@ export default function EventDetailsPage({
       : "open";
 
   return (
-    <main className="flex-1 w-full max-w-7xl mx-auto py-lg px-margin-mobile md:px-margin-desktop lg:px-gutter">
-      {/* Breadcrumbs */}
-      <LinkBreadcrumb items={[{ label: "Events", href: "/dashboard/events" }, { label: event.title }]} />
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter relative items-start">
-        {/* ── Left Column ── */}
-        <div className="lg:col-span-8 flex flex-col gap-xl">
-          {/* Hero Banner */}
-          <section className="flex flex-col gap-md">
-            <div className="w-full h-[300px] md:h-[400px] rounded-xl overflow-hidden relative shadow-sm group bg-surface-container flex items-center justify-center">
-              <img
-                src={event.bannerUrl || "/events/1.jpg"}
-                alt={event.title}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-              <div className="absolute bottom-md left-md flex gap-sm">
-                {/* FIX: force white text for all category badges — use explicit inline style
-                    since bg-primary-container in some themes renders dark bg with dark text */}
-                <span
-                  className="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold shadow-sm tracking-wide"
-                  style={{ background: "hsl(217 91% 60%)", color: "#fff" }}
-                >
-                  {event.category || "Event"}
-                </span>
-              </div>
-            </div>
-
-            <div>
-              <h1 className="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-on-surface mb-xs">
-                {event.title}
-              </h1>
-              <p className="font-body-lg text-body-lg text-on-surface-variant max-w-3xl line-clamp-3">
-                {event.description}
-              </p>
-            </div>
-          </section>
-
-          {/* About the Event */}
-          <Card className="bg-surface-container-lowest border-outline-variant shadow-sm">
-            <CardHeader>
-              <CardTitle className="font-headline-md text-headline-md text-on-surface flex items-center gap-sm">
-                <span className="material-symbols-outlined text-primary">
-                  info
-                </span>
-                About the Event
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="font-body-md text-body-md text-on-surface-variant space-y-6 pt-0">
-              <p>{event.description}</p>
-
-              {/* Detail rows */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                {/* Category */}
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-surface-container border border-outline-variant">
-                  <span className="material-symbols-outlined text-[20px] text-primary shrink-0">
-                    category
-                  </span>
-                  <div className="min-w-0">
-                    <p className="text-xs text-on-surface-variant font-medium uppercase tracking-wide mb-0.5">
-                      Category
-                    </p>
-                    <p className="font-medium text-on-surface truncate">
-                      {event.category || "—"}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Registration Deadline */}
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-surface-container border border-outline-variant">
-                  <span className="material-symbols-outlined text-[20px] text-primary shrink-0">
-                    event_busy
-                  </span>
-                  <div className="min-w-0">
-                    <p className="text-xs text-on-surface-variant font-medium uppercase tracking-wide mb-0.5">
-                      Registration Deadline
-                    </p>
-                    <p className="font-medium text-on-surface">
-                      {event.registrationDeadline
-                        ? new Date(
-                            event.registrationDeadline,
-                          ).toLocaleDateString(undefined, {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })
-                        : "—"}
-                    </p>
-                    {event.registrationDeadline && (
-                      <p className="text-xs text-on-surface-variant">
-                        {getRelativeTime(event.registrationDeadline)}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Venue */}
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-surface-container border border-outline-variant sm:col-span-2">
-                  <span className="material-symbols-outlined text-[20px] text-primary shrink-0">
-                    location_on
-                  </span>
-                  <div className="min-w-0">
-                    <p className="text-xs text-on-surface-variant font-medium uppercase tracking-wide mb-0.5">
-                      Venue
-                    </p>
-                    <p className="font-medium text-on-surface">
-                      {event.venue || "—"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* OpenStreetMap embed for the venue */}
-              <div className="flex flex-col gap-2">
-                <EventMap venue={event.venue} />
-              </div>
-            </CardContent>
-          </Card>
+    <>
+      <main className="flex-1 w-full max-w-7xl mx-auto py-lg px-margin-mobile md:px-margin-desktop lg:px-gutter pb-40 md:pb-32">
+        {/* Breadcrumbs */}
+        <div className="mb-6">
+          <LinkBreadcrumb
+            items={[
+              { label: "Events", href: "/dashboard/events" },
+              { label: event.title },
+            ]}
+          />
         </div>
 
-        {/* ── Right Column: Sticky Registration Card ── */}
-        <div className="lg:col-span-4 relative">
-          <Card className="sticky top-[100px] bg-surface-container-lowest border-outline-variant shadow-sm flex flex-col z-10">
-            <CardHeader className="border-b border-outline-variant pb-md">
-              {/* FIX: Replace Badge component (broken primary-color contrast) with
-                  explicitly-styled status pill so text is always readable */}
-              <div className="mb-sm">
-                {registrationStatus === "registered" && (
-                  <span className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider bg-green-600 text-white">
-                    <span className="material-symbols-outlined text-[14px]">
-                      check_circle
-                    </span>
-                    Registered
-                  </span>
-                )}
-                {registrationStatus === "full" && (
-                  <span className="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider bg-red-600 text-white">
-                    Full
-                  </span>
-                )}
-                {registrationStatus === "open" && (
-                  <span
-                    className="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider text-white"
-                    style={{ background: "hsl(217 91% 60%)" }}
-                  >
-                    Registration Open
-                  </span>
-                )}
+        {/* Mobile Title (appears above the right column on mobile) */}
+        <h1 className="lg:hidden font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-on-surface font-bold tracking-tight leading-tight mb-8">
+          {event.title}
+        </h1>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 relative items-start">
+          {/* ── Left Column ── */}
+          <div className="lg:col-span-7 flex flex-col gap-10 order-2 lg:order-1">
+            {/* Desktop Title */}
+            <h1 className="hidden lg:block font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-on-surface font-bold tracking-tight leading-tight">
+              {event.title}
+            </h1>
+
+            {/* Details */}
+            <div>
+              <h2 className="font-headline-sm text-headline-sm text-on-surface mb-6 font-bold border-b pb-2 border-outline-variant w-max">
+                Details
+              </h2>
+              <div className="font-body-md text-body-md text-on-surface-variant space-y-4 whitespace-pre-wrap leading-relaxed">
+                {event.description}
               </div>
+            </div>
 
-              <div className="flex items-end gap-xs mt-sm">
-                <span className="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary">
-                  Free
-                </span>
-                <span className="font-body-md text-body-md text-on-surface-variant pb-1">
-                  for Students
-                </span>
-              </div>
-            </CardHeader>
-
-            <CardContent className="pt-lg flex flex-col gap-lg">
-              {/* Logistics */}
-              <ul className="flex flex-col gap-md font-body-md text-body-md text-on-surface">
-                <li className="flex items-start gap-sm">
-                  <span className="material-symbols-outlined text-secondary shrink-0 mt-0.5">
-                    calendar_today
-                  </span>
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-medium">
-                        {new Date(event.startAt).toLocaleDateString()}
-                      </span>
-                      {getRelativeTime(event.startAt) && (
-                        <span
-                          className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold text-white"
-                          style={{ background: "hsl(217 91% 60%)" }}
-                        >
-                          {getRelativeTime(event.startAt)}
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-on-surface-variant text-sm">
-                      Starts at{" "}
-                      {new Date(event.startAt).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </span>
-                  </div>
-                </li>
-                <li className="flex items-start gap-sm">
-                  <span className="material-symbols-outlined text-secondary shrink-0 mt-0.5">
-                    location_on
-                  </span>
-                  <div>
-                    <span className="block font-medium">{event.venue}</span>
-                  </div>
-                </li>
-              </ul>
-
-              {/* Capacity & Action */}
-              <div className="flex flex-col gap-sm pt-sm border-t border-outline-variant">
-                <div className="flex justify-between items-center font-label-sm text-label-sm">
-                  <span className="text-on-surface-variant">
-                    Seats Available
-                  </span>
-                  {/* FIX: was reading event.registrationsCount (undefined → NaN).
-                      Now correctly reads event._count.registrations from Prisma. */}
-                  <span className="text-on-surface font-bold">
-                    {seatsAvailable} / {event.capacity}
-                  </span>
+            {/* Location */}
+            <div>
+              <h2 className="font-headline-sm text-headline-sm text-on-surface mb-6 font-bold">
+                Location{" "}
+              </h2>
+              {event.venue.toLowerCase().includes("online") || event.venue.toLowerCase().includes("zoom") ? (
+                <div className="mt-4 mb-8">
+                  <p className="text-on-surface-variant font-medium">Online Event</p>
                 </div>
-                <Progress
-                  value={progressPercentage}
-                  className={`h-2 ${isFull ? "[&>div]:bg-red-500" : "[&>div]:bg-secondary"}`}
+              ) : (
+                <div className="relative w-full h-[300px] mt-4 mb-8 rounded-2xl overflow-hidden border border-outline-variant shadow-sm z-10 bg-surface-container">
+                  <EventMap venue={event.venue} />
+                </div>
+              )}
+            </div>
+
+          </div>
+
+          {/* ── Right Column ── */}
+          <div className="lg:col-span-5 relative flex flex-col gap-4 order-1 lg:order-2">
+            {/* Hero Banner Image */}
+            <div className="w-full rounded-2xl overflow-hidden relative shadow-sm group bg-surface-container border border-outline-variant/30">
+              <AspectRatio ratio={16 / 9}>
+                <img
+                  src={event.bannerUrl || "/events/1.jpg"}
+                  alt={event.title}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
+              </AspectRatio>
+            </div>
 
-                {!isRegistered ? (
-                  <Button
-                    onClick={() =>
-                      router.push(
-                        `/dashboard/events/${resolvedParams.id}/register`,
-                      )
-                    }
-                    disabled={isFull}
-                    className="mt-md w-full font-label-md text-label-md font-bold shadow-sm text-white"
-                    style={
-                      !isFull
-                        ? { background: "hsl(217 91% 60%)", color: "#fff" }
-                        : {}
-                    }
-                  >
-                    {isFull ? "Event Full" : "Register Now"}
-                    {!isFull && (
-                      <span className="material-symbols-outlined text-sm ml-2">
-                        arrow_forward
-                      </span>
-                    )}
-                  </Button>
-                ) : (
-                  <Button
-                    disabled
-                    variant="secondary"
-                    className="mt-md w-full font-label-md text-label-md font-bold shadow-sm"
-                  >
-                    <span className="material-symbols-outlined text-[20px] mr-2">
-                      check_circle
+            {/* Floating Card: Date/Time and Location */}
+            <Card className="bg-surface-container-lowest border border-outline-variant shadow-md rounded-[20px] p-2 sticky top-[100px]">
+              <CardContent className="p-4 space-y-6">
+                <div className="flex gap-4 items-start">
+                  <div className="bg-secondary/10 text-secondary p-2.5 rounded-xl flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-xl">
+                      calendar_today
                     </span>
-                    You are registered
-                  </Button>
-                )}
+                  </div>
+                  <div className="mt-0.5">
+                    <h3 className="font-semibold text-on-surface text-sm">
+                      Event Timings
+                    </h3>
+                    <p className="text-xs text-on-surface-variant mt-1">
+                      {new Date(event.startAt).toLocaleDateString("en-US", {
+                        weekday: "long",
+                        month: "short",
+                        day: "numeric",
+                      })}{" "}
+                      •{" "}
+                      {new Date(event.startAt).toLocaleTimeString("en-US", {
+                        hour: "numeric",
+                        minute: "2-digit",
+                      })}{" "}
+                      to{" "}
+                      {event.endAt
+                        ? new Date(event.endAt).toLocaleTimeString("en-US", {
+                            hour: "numeric",
+                            minute: "2-digit",
+                          })
+                        : "TBD"}
+                    </p>
+                  </div>
+                </div>
 
-                <p className="text-center text-xs text-on-surface-variant mt-xs">
-                  Registration closes{" "}
-                  {new Date(event.registrationDeadline).toLocaleDateString()}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+                <div className="flex gap-4 items-start">
+                  <div className="bg-orange-500/10 text-orange-600 p-2.5 rounded-xl flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-xl">
+                      alarm
+                    </span>
+                  </div>
+                  <div className="mt-0.5">
+                    <h3 className="font-semibold text-on-surface text-sm">
+                      Registration Deadline
+                    </h3>
+                    <p className="text-xs text-on-surface-variant mt-1">
+                      {new Date(event.registrationDeadline).toLocaleDateString(
+                        "en-US",
+                        { month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" },
+                      )}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4 items-start">
+                  <div className="bg-green-500/10 text-green-600 p-2.5 rounded-xl flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-xl">
+                      {event.venue.toLowerCase().includes("online") ||
+                      event.venue.toLowerCase().includes("zoom") ? "videocam" : "location_on"}
+                    </span>
+                  </div>
+                  <div className="mt-0.5">
+                    <h3 className="font-semibold text-on-surface text-sm">
+                      {event.venue.toLowerCase().includes("online") ||
+                      event.venue.toLowerCase().includes("zoom")
+                        ? "Online event"
+                        : event.venue}
+                    </h3>
+                    <p className="text-xs text-on-surface-variant mt-1">
+                      {event.venue.toLowerCase().includes("online") ||
+                      event.venue.toLowerCase().includes("zoom")
+                        ? "Virtual"
+                        : "In-Person"}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* You may also like */}
+        {relatedEvents.length > 0 && (
+          <div className="flex flex-col gap-4 mt-16 pt-8 border-t border-outline-variant">
+            <div className="flex items-center justify-between">
+              <h2 className="font-headline-sm text-headline-sm text-on-surface font-bold">
+                You may also like
+              </h2>
+              <Link
+                href="/dashboard/events"
+                className="text-primary hover:underline text-sm font-medium"
+              >
+                See all
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-2">
+              {relatedEvents.map((relatedEvent) => (
+                <EventCard
+                  key={relatedEvent.id}
+                  event={relatedEvent}
+                  onClick={() =>
+                    router.push(`/dashboard/events/${relatedEvent.id}`)
+                  }
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* Sticky Floating Bottom Bar */}
+      <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md border-t border-outline-variant shadow-[0_-8px_30px_-15px_rgba(0,0,0,0.1)] p-4 px-margin-mobile md:px-margin-desktop lg:px-gutter">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          {/* Left Info */}
+          <div className="hidden md:flex flex-col flex-1 min-w-0 pr-4">
+            <p className="text-xs font-semibold text-on-surface-variant mb-0.5">
+              {new Date(event.startAt).toLocaleDateString("en-US", {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+              })}{" "}
+              •{" "}
+              {new Date(event.startAt).toLocaleTimeString("en-US", {
+                hour: "numeric",
+                minute: "2-digit",
+              })}
+            </p>
+            <p className="text-[15px] font-bold text-on-surface truncate">
+              {event.title}
+            </p>
+          </div>
+
+          {/* Right Actions */}
+          <div className="flex items-center gap-3 w-full md:w-auto shrink-0 justify-between md:justify-end">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center rounded-full border border-outline-variant bg-surface-container-lowest px-3 py-1.5 text-xs font-semibold text-on-surface mr-1">
+                Free
+              </span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full h-10 w-10 text-on-surface-variant hover:text-red-500 hover:bg-red-50"
+              >
+                <span className="material-symbols-outlined text-[20px]">
+                  favorite
+                </span>
+              </Button>
+              <Button
+                variant="secondary"
+                size="icon"
+                className="rounded-full h-10 w-10 text-on-surface-variant bg-surface-container-highest hover:bg-surface-container-high"
+              >
+                <span className="material-symbols-outlined text-[20px]">
+                  ios_share
+                </span>
+              </Button>
+            </div>
+
+            {!isRegistered ? (
+              <Button
+                onClick={() =>
+                  router.push(`/dashboard/events/${resolvedParams.id}/register`)
+                }
+                disabled={isFull}
+                className="bg-pink-400 rounded-xl px-8 py-6 text-[15px] font-bold shadow-md"
+              >
+                {isFull ? "Event Full" : "Register"}
+              </Button>
+            ) : (
+              <Button
+                disabled
+                variant="secondary"
+                className="rounded-xl px-8 py-6 text-[15px] font-bold shadow-sm"
+              >
+                <span className="material-symbols-outlined text-[20px] mr-2">
+                  check_circle
+                </span>
+                Registered
+              </Button>
+            )}
+          </div>
         </div>
       </div>
-    </main>
+    </>
   );
 }

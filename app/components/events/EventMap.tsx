@@ -126,7 +126,7 @@ export default function EventMap({ venue }: EventMapProps) {
   }, [venue]);
 
   return (
-    <div className="relative w-full h-[220px] rounded-xl overflow-hidden border border-outline-variant isolate">
+    <div className="relative w-full h-full isolate">
       {status === "loading" && (
         <div className="absolute inset-0 flex items-center justify-center bg-surface-container z-10">
           <div className="flex items-center gap-2 text-on-surface-variant text-sm">

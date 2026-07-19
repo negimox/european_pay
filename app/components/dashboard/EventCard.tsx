@@ -22,6 +22,7 @@ interface EventProps {
   isRegistered?: boolean;
   onClick?: () => void;
   className?: string;
+  onCancel?: (eventId: string) => void;
 }
 
 export function EventCard({
@@ -29,6 +30,7 @@ export function EventCard({
   isRegistered = false,
   onClick,
   className,
+  onCancel,
 }: EventProps) {
   const getRelativeTime = (dateStr: string) => {
     const eventDate = new Date(dateStr);
