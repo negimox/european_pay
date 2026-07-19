@@ -74,6 +74,10 @@ export default function LoginPage() {
               <p className="font-body-md text-body-md text-on-surface-variant">
                 Please sign in to your account.
               </p>
+              <p className="font-body-md text-body-md text-on-surface-variant mt-[4px]">
+                (Testing: For admin access login through - admin@test.com |
+                Admin1234)
+              </p>
             </div>
 
             <AuthAlert serverError={state?.error} />

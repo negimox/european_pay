@@ -16,9 +16,21 @@ export default function EventMap({ venue }: EventMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<"loading" | "found" | "error">("loading");
   const mapInstanceRef = useRef<any>(null);
+  const [debouncedVenue, setDebouncedVenue] = useState(venue);
+
+  // Debounce the venue prop by 1200ms to respect OpenStreetMap Nominatim rate limits (1 req/s max)
+  useEffect(() => {
+    if (venue) {
+      setStatus("loading");
+    }
+    const handler = setTimeout(() => {
+      setDebouncedVenue(venue);
+    }, 1200);
+    return () => clearTimeout(handler);
+  }, [venue]);
 
   useEffect(() => {
-    if (!venue || !mapRef.current) return;
+    if (!debouncedVenue || !mapRef.current) return;
 
     let cancelled = false;
 
@@ -41,7 +53,7 @@ export default function EventMap({ venue }: EventMapProps) {
       let coords: [number, number] = [20, 0]; // world fallback
       try {
         const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(venue)}&format=json&limit=1`,
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(debouncedVenue)}&format=json&limit=1`,
           { headers: { "Accept-Language": "en" } }
         );
         const results: NominatimResult[] = await res.json();
@@ -108,7 +120,7 @@ export default function EventMap({ venue }: EventMapProps) {
       L.marker(coords, { icon: customIcon })
         .addTo(map)
         .bindPopup(
-          `<div style="font-family: system-ui; font-size: 13px; font-weight: 600; min-width: 140px;">${venue}</div>`,
+          `<div style="font-family: system-ui; font-size: 13px; font-weight: 600; min-width: 140px;">${debouncedVenue}</div>`,
           { closeButton: false, offset: [0, -4] }
         )
         .openPopup();
@@ -123,7 +135,7 @@ export default function EventMap({ venue }: EventMapProps) {
         mapInstanceRef.current = null;
       }
     };
-  }, [venue]);
+  }, [debouncedVenue]);
 
   return (
     <div className="relative w-full h-full isolate">
@@ -139,7 +151,7 @@ export default function EventMap({ venue }: EventMapProps) {
         <div className="absolute inset-0 flex items-center justify-center bg-surface-container z-10">
           <div className="flex flex-col items-center gap-1 text-on-surface-variant text-sm text-center px-4">
             <span className="material-symbols-outlined text-2xl text-secondary">location_off</span>
-            <span>Could not locate "{venue}" on the map</span>
+            <span>Could not locate "{debouncedVenue}" on the map</span>
           </div>
         </div>
       )}

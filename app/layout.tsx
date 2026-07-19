@@ -1,35 +1,7 @@
 import type { Metadata } from "next";
-import {
-  Inter,
-  Young_Serif,
-  Google_Sans_Flex,
-  Archivo,
-  Pacifico,
-  Quicksand,
-} from "next/font/google";
+import { Pacifico, Quicksand } from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-const googlesansflex = Google_Sans_Flex({
-  variable: "--font-google-sans-flex",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-const archivo = Archivo({
-  variable: "--font-archivo",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const young_serif = Young_Serif({
-  variable: "--font-young",
-  subsets: ["latin"],
-  weight: ["400"],
-});
 
 const fontSans = Quicksand({
   subsets: ["latin"],
@@ -65,7 +37,9 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className={`${fontSans.variable} ${fontSerif.variable} min-h-full flex flex-col bg-background text-foreground`}>
+      <body
+        className={`${fontSans.variable} ${fontSerif.variable} min-h-full flex flex-col bg-background text-foreground`}
+      >
         <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>
