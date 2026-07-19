@@ -27,7 +27,7 @@ export function AnnouncementModal({ announcement, trigger }: AnnouncementModalPr
 
   return (
     <Dialog>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogTrigger>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-hidden flex flex-col bg-surface text-on-surface p-0 border-outline-variant/30">
         <DialogHeader className="p-6 pb-2 text-left">
           <DialogTitle className="font-display-sm text-display-sm pr-6">
