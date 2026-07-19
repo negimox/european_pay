@@ -14,6 +14,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
 import { LinkBreadcrumb } from "@/app/components/dashboard/LinkBreadcrumb";
 import { EventCard } from "@/app/components/dashboard/EventCard";
@@ -53,6 +62,18 @@ const CATEGORY_ICONS: Record<string, string> = {
   OTHER: "category",
 };
 
+// Colors for each category icon
+const CATEGORY_COLORS: Record<string, string> = {
+  ALL: "text-blue-500",
+  ACADEMIC: "text-indigo-500",
+  CULTURAL: "text-pink-500",
+  SPORTS: "text-orange-500",
+  TECHNICAL: "text-emerald-500",
+  WORKSHOP: "text-amber-500",
+  SOCIAL: "text-purple-500",
+  OTHER: "text-slate-500",
+};
+
 export default function EventsPage() {
   const router = useRouter();
   const [events, setEvents] = useState<any[]>([]);
@@ -64,6 +85,15 @@ export default function EventsPage() {
   // Filters
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
+  // Reset pagination when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, dateRange]);
 
   useEffect(() => {
     Promise.all([
@@ -147,10 +177,17 @@ export default function EventsPage() {
   const clearAll = () => {
     setSelectedCategory("ALL");
     setDateRange(undefined);
+    setCurrentPage(1);
   };
 
   const hasActiveFilters =
     selectedCategory !== "ALL" || dateRange?.from || dateRange?.to;
+
+  const totalPages = Math.ceil(filteredEvents.length / itemsPerPage);
+  const paginatedEvents = filteredEvents.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <div className="p-margin-mobile md:p-margin-desktop bg-surface-bright flex-1 overflow-x-hidden">
@@ -245,7 +282,7 @@ export default function EventsPage() {
                         : "border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
                     )}
                   >
-                    <span className="material-symbols-outlined text-[24px]">
+                    <span className={cn("material-symbols-outlined text-[24px]", CATEGORY_COLORS[cat])}>
                       {CATEGORY_ICONS[cat]}
                     </span>
                     <span className="text-[13.5px] font-medium">
@@ -286,7 +323,7 @@ export default function EventsPage() {
                 )}
               </div>
             ) : (
-              filteredEvents.map((event) => {
+              paginatedEvents.map((event) => {
                 const isRegistered = registeredEventIds.has(event.id);
                 return (
                   <div key={event.id}>
@@ -300,6 +337,54 @@ export default function EventsPage() {
               })
             )}
           </div>
+          
+          {totalPages > 1 && (
+            <div className="mt-12 flex justify-center">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (currentPage > 1) setCurrentPage(currentPage - 1);
+                      }}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                    />
+                  </PaginationItem>
+
+                  {[...Array(totalPages)].map((_, i) => {
+                    const page = i + 1;
+                    return (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          href="#"
+                          isActive={currentPage === page}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setCurrentPage(page);
+                          }}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  })}
+
+                  <PaginationItem>
+                    <PaginationNext
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+                      }}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </section>
       </div>
     </div>

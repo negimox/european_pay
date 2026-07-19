@@ -67,104 +67,45 @@ async function seedData(adminId: string) {
   await prisma.announcement.deleteMany({});
 
   // Add Events
-  const events = [
-    {
-      title: "Tech Career Fair 2026",
-      description: "Meet with top tech companies looking to hire students for internships and full-time roles. Bring your resumes!",
-      category: "TECHNICAL" as any,
-      bannerUrl: "/events/1.jpg",
-      startAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5),
-      endAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5 + 1000 * 60 * 60 * 4),
-      registrationDeadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3),
-      capacity: 150,
-      venue: "Main Campus Hall",
-      createdById: adminId,
-    },
-    {
-      title: "Campus Music Festival",
-      description: "Join us for an evening of live music performed by student bands. Food trucks will be available.",
-      category: "CULTURAL" as any,
-      bannerUrl: "/events/music.jpg",
-      startAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 10),
-      endAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 10 + 1000 * 60 * 60 * 5),
-      registrationDeadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 8),
-      capacity: 500,
-      venue: "Open Air Theatre",
-      createdById: adminId,
-    },
-    {
-      title: "Machine Learning Workshop",
-      description: "A hands-on workshop covering the basics of neural networks and deep learning using PyTorch.",
-      category: "WORKSHOP" as any,
-      bannerUrl: "/events/1.jpg",
-      startAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 12),
-      endAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 12 + 1000 * 60 * 60 * 3),
-      registrationDeadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 10),
-      capacity: 40,
-      venue: "Computer Lab 3",
-      createdById: adminId,
-    },
-    {
-      title: "Inter-College Basketball Finals",
-      description: "Come support our university team as they face off against our rivals in the regional finals.",
-      category: "SPORTS" as any,
-      bannerUrl: "/events/1.jpg",
-      startAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 15),
-      endAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 15 + 1000 * 60 * 60 * 2.5),
-      registrationDeadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14),
-      capacity: 800,
-      venue: "Indoor Stadium",
-      createdById: adminId,
-    },
-    {
-      title: "Annual Alumni Meet",
-      description: "Connect with our esteemed alumni network. Great opportunity for networking and mentorship.",
-      category: "SOCIAL" as any,
-      bannerUrl: "/events/1.jpg",
-      startAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 20),
-      endAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 20 + 1000 * 60 * 60 * 4),
-      registrationDeadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 15),
-      capacity: 200,
-      venue: "University Club",
-      createdById: adminId,
-    },
-    {
-      title: "Startup Pitch Competition",
-      description: "Watch student founders pitch their innovative ideas to a panel of venture capitalists.",
-      category: "ACADEMIC" as any,
-      bannerUrl: "/events/1.jpg",
-      startAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 25),
-      endAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 25 + 1000 * 60 * 60 * 3),
-      registrationDeadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 20),
-      capacity: 100,
-      venue: "Innovation Center",
-      createdById: adminId,
-    },
-    {
-      title: "Global Food Festival",
-      description: "Experience cuisines from over 20 different countries prepared by international student groups.",
-      category: "CULTURAL" as any,
-      bannerUrl: "/events/1.jpg",
-      startAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 28),
-      endAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 28 + 1000 * 60 * 60 * 6),
-      registrationDeadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 27),
-      capacity: 1000,
-      venue: "Main Quad",
-      createdById: adminId,
-    },
-    {
-      title: "Design Thinking Bootcamp",
-      description: "An intensive weekend bootcamp on applying design thinking principles to solve real-world problems.",
-      category: "WORKSHOP" as any,
-      bannerUrl: "/events/1.jpg",
-      startAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 32),
-      endAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 33 + 1000 * 60 * 60 * 8),
-      registrationDeadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 28),
-      capacity: 50,
-      venue: "Design Studio",
-      createdById: adminId,
-    }
+  const baseEvents = [
+    { title: "Tech Career Fair", desc: "Meet with top tech companies looking to hire students for internships and full-time roles. Bring your resumes!" },
+    { title: "Campus Music Festival", desc: "Join us for an evening of live music performed by student bands. Food trucks will be available." },
+    { title: "Machine Learning Workshop", desc: "A hands-on workshop covering the basics of neural networks and deep learning using PyTorch." },
+    { title: "Inter-College Basketball Finals", desc: "Come support our university team as they face off against our rivals in the regional finals." },
+    { title: "Annual Alumni Meet", desc: "Connect with our esteemed alumni network. Great opportunity for networking and mentorship." },
+    { title: "Startup Pitch Competition", desc: "Watch student founders pitch their innovative ideas to a panel of venture capitalists." },
+    { title: "Global Food Festival", desc: "Experience cuisines from over 20 different countries prepared by international student groups." },
+    { title: "Design Thinking Bootcamp", desc: "An intensive weekend bootcamp on applying design thinking principles to solve real-world problems." },
+    { title: "Hackathon 2026", desc: "48-hour coding marathon to build solutions for sustainability and social impact." },
+    { title: "Mental Health Awareness Seminar", desc: "Guest speakers and interactive sessions on managing stress and maintaining mental wellbeing." },
+    { title: "Robotics Exhibition", desc: "Showcase of autonomous robots and drones built by the engineering departments." },
+    { title: "Photography Walk", desc: "Join the photography club for a guided photowalk around the historic parts of our campus." }
   ];
+  const categories = ["TECHNICAL", "CULTURAL", "WORKSHOP", "SPORTS", "SOCIAL", "ACADEMIC"];
+  const venues = ["Main Campus Hall", "Open Air Theatre", "Computer Lab 3", "Indoor Stadium", "University Club", "Innovation Center", "Main Quad", "Design Studio", "Library Auditorium", "Student Center"];
+  
+  const events: any[] = [];
+  for (let i = 1; i <= 30; i++) {
+    const base = baseEvents[i % baseEvents.length];
+    const category = categories[i % categories.length];
+    const venue = venues[i % venues.length];
+    
+    const daysOut = i + Math.floor(Math.random() * 5);
+    const durationHours = 2 + Math.floor(Math.random() * 4);
+    
+    events.push({
+      title: `${base.title} ${i}`,
+      description: base.desc,
+      category: category as any,
+      bannerUrl: `/events/event-${i}.jpg`,
+      startAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * daysOut),
+      endAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * daysOut + 1000 * 60 * 60 * durationHours),
+      registrationDeadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * (daysOut - 2)),
+      capacity: 50 + Math.floor(Math.random() * 450),
+      venue: venue,
+      createdById: adminId,
+    });
+  }
 
   for (const ev of events) {
     await prisma.event.create({
