@@ -9,6 +9,7 @@ import { EventCard } from "@/app/components/dashboard/EventCard";
 import { AnnouncementsList } from "@/app/components/dashboard/AnnouncementsList";
 import { MyRegistrationsList } from "@/app/components/dashboard/MyRegistrationsList";
 import { LinkBreadcrumb } from "@/app/components/dashboard/LinkBreadcrumb";
+import { AnnouncementModal } from "@/app/components/dashboard/AnnouncementModal";
 import {
   Card,
   CardContent,
@@ -276,21 +277,25 @@ export function DashboardContent({
                   </p>
                 ) : (
                   announcements.map((ann, idx) => (
-                    <div
-                      key={ann.id}
-                      className="p-4 rounded-lg hover:bg-surface-container-highest transition-colors cursor-pointer group select-none"
-                    >
-                      <div className="flex justify-between items-start mb-1">
-                        <h4 className="font-label-md text-label-md font-bold text-on-surface group-hover:text-primary transition-colors">
-                          {ann.title}
-                        </h4>
-                        <span className="font-label-sm text-label-sm text-on-surface-variant shrink-0 ml-2">
-                          {new Date(ann.createdAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <p className="font-body-md text-body-md text-on-surface-variant line-clamp-2">
-                        {ann.content}
-                      </p>
+                    <div key={ann.id} className="flex flex-col">
+                      <AnnouncementModal
+                        announcement={ann}
+                        trigger={
+                          <div className="p-4 rounded-lg hover:bg-surface-container-highest transition-colors cursor-pointer group select-none text-left">
+                            <div className="flex justify-between items-start mb-1">
+                              <h4 className="font-label-md text-label-md font-bold text-on-surface group-hover:text-primary transition-colors">
+                                {ann.title}
+                              </h4>
+                              <span className="font-label-sm text-label-sm text-on-surface-variant shrink-0 ml-2">
+                                {new Date(ann.createdAt).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <p className="font-body-md text-body-md text-on-surface-variant line-clamp-2">
+                              {ann.content}
+                            </p>
+                          </div>
+                        }
+                      />
                       {idx < announcements.length - 1 && (
                         <Separator className="mt-4 bg-outline-variant/50" />
                       )}

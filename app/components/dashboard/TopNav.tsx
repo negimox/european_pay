@@ -184,7 +184,7 @@ export function TopNav({ user, role }: TopNavProps) {
                   <span className="material-symbols-outlined mr-2 text-[18px]">
                     settings
                   </span>
-                  Settings
+                  Profile
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={handleLogout}

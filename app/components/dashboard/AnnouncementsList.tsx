@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { AnnouncementModal } from "@/app/components/dashboard/AnnouncementModal";
 
 interface Announcement {
   id: string;
@@ -50,17 +51,24 @@ export function AnnouncementsList({
                   {index > 0 && (
                     <Separator className="my-4 bg-outline-variant/30" />
                   )}
-                  <div className="flex items-center justify-between mb-1">
-                    <h4 className="font-title-md text-title-md font-medium text-on-surface">
-                      {announcement.title}
-                    </h4>
-                    <span className="font-label-sm text-label-sm text-on-surface-variant">
-                      {new Date(announcement.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <p className="font-body-md text-body-md text-on-surface-variant whitespace-pre-wrap">
-                    {announcement.content}
-                  </p>
+                  <AnnouncementModal
+                    announcement={announcement}
+                    trigger={
+                      <div className="flex flex-col gap-1 text-left cursor-pointer group p-2 -mx-2 rounded-lg hover:bg-surface-container-highest transition-colors">
+                        <div className="flex items-center justify-between mb-1">
+                          <h4 className="font-title-md text-title-md font-medium text-on-surface group-hover:text-primary transition-colors">
+                            {announcement.title}
+                          </h4>
+                          <span className="font-label-sm text-label-sm text-on-surface-variant shrink-0 ml-4">
+                            {new Date(announcement.createdAt).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <p className="font-body-md text-body-md text-on-surface-variant whitespace-pre-wrap line-clamp-3">
+                          {announcement.content}
+                        </p>
+                      </div>
+                    }
+                  />
                 </div>
               ))}
             </div>
