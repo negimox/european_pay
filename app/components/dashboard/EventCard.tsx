@@ -4,6 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { cn } from "@/lib/utils";
 import { ShareModal } from "@/app/components/events/ShareModal";
+import {
+  CATEGORY_LABELS,
+  CATEGORY_ICONS,
+  CATEGORY_COLORS,
+} from "@/config/categories";
 
 interface EventProps {
   event: {
@@ -155,8 +160,12 @@ export function EventCard({
             </div>
 
             <div className="truncate flex items-center">
-              <span className="material-symbols-outlined pr-2.5">category</span>{" "}
-              {event.category || event.venue}
+              <span className={cn("material-symbols-outlined pr-2.5", event.category ? CATEGORY_COLORS[event.category] : "")}>
+                {event.category ? CATEGORY_ICONS[event.category] || "category" : "category"}
+              </span>{" "}
+              <span className={event.category ? CATEGORY_COLORS[event.category] : ""}>
+                {event.category ? CATEGORY_LABELS[event.category] || event.category : event.venue}
+              </span>
             </div>
           </div>
 
