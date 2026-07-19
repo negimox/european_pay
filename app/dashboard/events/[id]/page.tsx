@@ -186,9 +186,12 @@ export default function EventDetailsPage({
               <h2 className="font-headline-sm text-headline-sm text-on-surface mb-6 font-bold">
                 Location{" "}
               </h2>
-              {event.venue.toLowerCase().includes("online") || event.venue.toLowerCase().includes("zoom") ? (
+              {event.venue.toLowerCase().includes("online") ||
+              event.venue.toLowerCase().includes("zoom") ? (
                 <div className="mt-4 mb-8">
-                  <p className="text-on-surface-variant font-medium">Online Event</p>
+                  <p className="text-on-surface-variant font-medium">
+                    Online Event
+                  </p>
                 </div>
               ) : (
                 <div className="relative w-full h-[300px] mt-4 mb-8 rounded-2xl overflow-hidden border border-outline-variant shadow-sm z-10 bg-surface-container">
@@ -196,7 +199,6 @@ export default function EventDetailsPage({
                 </div>
               )}
             </div>
-
           </div>
 
           {/* ── Right Column ── */}
@@ -260,7 +262,13 @@ export default function EventDetailsPage({
                     <p className="text-xs text-on-surface-variant mt-1">
                       {new Date(event.registrationDeadline).toLocaleDateString(
                         "en-US",
-                        { month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" },
+                        {
+                          month: "long",
+                          day: "numeric",
+                          year: "numeric",
+                          hour: "numeric",
+                          minute: "2-digit",
+                        },
                       )}
                     </p>
                   </div>
@@ -270,7 +278,9 @@ export default function EventDetailsPage({
                   <div className="bg-green-500/10 text-green-600 p-2.5 rounded-xl flex items-center justify-center shrink-0">
                     <span className="material-symbols-outlined text-xl">
                       {event.venue.toLowerCase().includes("online") ||
-                      event.venue.toLowerCase().includes("zoom") ? "videocam" : "location_on"}
+                      event.venue.toLowerCase().includes("zoom")
+                        ? "videocam"
+                        : "location_on"}
                     </span>
                   </div>
                   <div className="mt-0.5">
@@ -378,7 +388,7 @@ export default function EventDetailsPage({
                   router.push(`/dashboard/events/${resolvedParams.id}/register`)
                 }
                 disabled={isFull}
-                className="bg-pink-400 rounded-xl px-8 py-6 text-[15px] font-bold shadow-md"
+                className="rounded-xl px-8 py-6 text-[15px] font-bold shadow-md"
               >
                 {isFull ? "Event Full" : "Register"}
               </Button>

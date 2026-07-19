@@ -84,8 +84,8 @@ export function EventCard({
           )}
         </AspectRatio>
 
-        <div 
-          onClick={(e) => e.stopPropagation()} 
+        <div
+          onClick={(e) => e.stopPropagation()}
           className="absolute top-3 right-3 z-10"
         >
           <ShareModal eventId={event.id}>
@@ -184,7 +184,7 @@ export function EventCard({
                 </span>
               </div>
             )}
-            <span className="text-[14px] font-bold text-gray-900">
+            <span className="text-[14px] font-bold ">
               {registrationsCount}{" "}
               {registrationsCount === 1 ? "attendee" : "attendees"}
             </span>
