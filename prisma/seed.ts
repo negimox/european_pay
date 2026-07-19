@@ -27,6 +27,7 @@ async function main() {
         email: adminEmail,
         passwordHash,
         role: Role.ADMIN,
+        isVerified: true,
       },
     });
     console.log(`✅ Created admin: ${admin.email}`);
@@ -51,6 +52,7 @@ async function main() {
         email: studentEmail,
         passwordHash,
         role: Role.STUDENT,
+        isVerified: true,
       },
     });
     console.log(`✅ Created student: ${student.email}`);
