@@ -54,7 +54,7 @@ export default function RegisterPage() {
 
         {/* Right Side: Registration Form */}
         <div className="w-full lg:w-[55%] xl:w-1/2 flex items-center justify-center p-[16px] sm:p-[24px] lg:p-[64px] overflow-y-auto">
-          <div className="w-full max-w-[480px] bg-surface rounded-lg sm:bg-white sm:shadow-[0_4px_24px_rgba(0,0,0,0.02)] sm:border sm:border-outline-variant/30 sm:p-8 transition-all duration-300">
+          <div className="w-full max-w-[480px] bg-surface rounded-lg sm:bg-surface-bright sm:shadow-[0_4px_24px_rgba(0,0,0,0.02)] sm:border sm:border-outline-variant/30 sm:p-8 transition-all duration-300">
             {/* Mobile Logo */}
             <div className="flex items-center justify-center gap-2 mb-8 lg:hidden text-primary">
               <Image

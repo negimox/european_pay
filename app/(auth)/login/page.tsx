@@ -1,9 +1,9 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { signIn, AuthActionState } from "@/app/actions/auth";
+import { signIn, resendVerification, AuthActionState } from "@/app/actions/auth";
 import { AuthAlert } from "@/app/components/auth/AuthAlert";
 
 export default function LoginPage() {
@@ -11,6 +11,49 @@ export default function LoginPage() {
     AuthActionState,
     FormData
   >(signIn, {});
+  const [resendStatus, setResendStatus] = useState<{message?: string, error?: string} | null>(null);
+  const [isResending, setIsResending] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+
+  // Load existing cooldown from localStorage on mount
+  useEffect(() => {
+    const lastSent = localStorage.getItem("lastVerificationSent");
+    if (lastSent) {
+      const timeSince = Date.now() - parseInt(lastSent, 10);
+      if (timeSince < 5 * 60 * 1000) {
+        setCooldown(Math.floor((5 * 60 * 1000 - timeSince) / 1000));
+      }
+    }
+  }, []);
+
+  // Countdown timer
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setInterval(() => {
+      setCooldown((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [cooldown]);
+
+  const handleResend = async () => {
+    if (!state?.unverifiedEmail || isResending || cooldown > 0) return;
+    setIsResending(true);
+    setResendStatus(null);
+    try {
+      const result = await resendVerification(state.unverifiedEmail);
+      if (result.error) {
+        setResendStatus({ error: result.error });
+      } else {
+        setResendStatus({ message: "Verification email resent successfully!" });
+        localStorage.setItem("lastVerificationSent", Date.now().toString());
+        setCooldown(5 * 60);
+      }
+    } catch (err) {
+      setResendStatus({ error: "Failed to resend email." });
+    } finally {
+      setIsResending(false);
+    }
+  };
 
   return (
     <div className="bg-surface text-on-surface font-body-md h-screen w-full flex overflow-hidden">
@@ -52,7 +95,7 @@ export default function LoginPage() {
 
         {/* Right Side: Login Form */}
         <section className="w-full lg:w-1/2 flex items-center justify-center p-[16px] sm:p-[24px] lg:p-[64px] overflow-y-auto bg-surface-container-lowest relative z-20">
-          <div className="w-full max-w-[480px] bg-surface rounded-lg sm:bg-white sm:shadow-[0_4px_24px_rgba(0,0,0,0.02)] sm:border sm:border-outline-variant/30 sm:p-8 transition-all duration-300">
+          <div className="w-full max-w-[480px] bg-surface rounded-lg sm:bg-surface-bright sm:shadow-[0_4px_24px_rgba(0,0,0,0.02)] sm:border sm:border-outline-variant/30 sm:p-8 transition-all duration-300">
             {/* Mobile Logo */}
             <div className="flex items-center justify-center gap-2 mb-8 lg:hidden text-primary">
               <Image
@@ -81,6 +124,32 @@ export default function LoginPage() {
             </div>
 
             <AuthAlert serverError={state?.error} />
+
+            {state?.requiresVerification && state?.unverifiedEmail && (
+              <div className="mb-6 bg-surface-container p-4 rounded-lg border border-outline-variant/30 text-center">
+                <p className="text-on-surface-variant font-body-sm mb-3">
+                  Didn't receive the email or it expired?
+                </p>
+                <button
+                  type="button"
+                  onClick={handleResend}
+                  disabled={isResending || cooldown > 0}
+                  className="bg-primary/10 text-primary hover:bg-primary/20 px-4 py-2 rounded-md font-label-sm transition-colors disabled:opacity-50"
+                >
+                  {isResending 
+                    ? "Sending..." 
+                    : cooldown > 0 
+                      ? `Wait ${Math.floor(cooldown / 60)}:${(cooldown % 60).toString().padStart(2, '0')} to Resend` 
+                      : "Re-send Verification Email"}
+                </button>
+                {resendStatus?.error && (
+                  <p className="text-error text-xs mt-2">{resendStatus.error}</p>
+                )}
+                {resendStatus?.message && (
+                  <p className="text-primary text-xs mt-2">{resendStatus.message}</p>
+                )}
+              </div>
+            )}
 
             <form action={formAction} className="space-y-5">
               {/* Email Input */}

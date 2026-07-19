@@ -39,6 +39,8 @@ export interface AuthActionState {
   error?: string;
   fieldErrors?: Record<string, string[]>;
   successMessage?: string;
+  requiresVerification?: boolean;
+  unverifiedEmail?: string;
 }
 
 // ─── Sign Up ─────────────────────────────────────────────────────────────────
@@ -128,7 +130,11 @@ export async function signIn(
   }
 
   if (!user.isVerified) {
-    return { error: "Please verify your email address before logging in." };
+    return { 
+      error: "Please verify your email address before logging in.",
+      requiresVerification: true,
+      unverifiedEmail: email
+    };
   }
 
   // Use constant-time comparison pattern — don't reveal whether user exists
@@ -150,4 +156,41 @@ export async function signIn(
 export async function signOut(): Promise<void> {
   await deleteSession();
   redirect("/login");
+}
+
+// ─── Resend Verification ───────────────────────────────────────────────────────
+
+export async function resendVerification(email: string) {
+  const existingTokens = await prisma.verificationToken.findMany({
+    where: { identifier: email },
+    orderBy: { expires: "desc" },
+    take: 1,
+  });
+
+  if (existingTokens.length > 0) {
+    const latestToken = existingTokens[0];
+    const createdAt = new Date(latestToken.expires.getTime() - 24 * 60 * 60 * 1000);
+    const msSinceCreation = Date.now() - createdAt.getTime();
+    const fiveMinutes = 5 * 60 * 1000;
+    
+    if (msSinceCreation < fiveMinutes) {
+      const waitTime = Math.ceil((fiveMinutes - msSinceCreation) / 60000);
+      return { error: `Please wait ${waitTime} minute(s) before resending.` };
+    }
+  }
+
+  // Delete old tokens
+  await prisma.verificationToken.deleteMany({ where: { identifier: email } });
+  
+  const token = uuidv4();
+  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+  await prisma.verificationToken.create({
+    data: { identifier: email, token, expires }
+  });
+
+  const baseUrl = "https://european-pay.vercel.app";
+  await sendVerificationEmail(email, token, baseUrl);
+  
+  return { success: true };
 }

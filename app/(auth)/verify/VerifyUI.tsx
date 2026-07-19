@@ -5,7 +5,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
-export function VerifyUI({ success, message }: { success: boolean; message: string }) {
+export function VerifyUI({
+  success,
+  message,
+}: {
+  success: boolean;
+  message: string;
+}) {
   const router = useRouter();
   const [countdown, setCountdown] = useState(5);
 
@@ -25,7 +31,7 @@ export function VerifyUI({ success, message }: { success: boolean; message: stri
   }, [router]);
 
   return (
-    <div className="w-[90%] max-w-[480px] bg-white rounded-lg shadow-md border border-outline-variant/30 p-8 text-center mx-auto shrink-0 min-w-[300px]">
+    <div className="w-[90%] max-w-[480px] bg-surface-bright rounded-lg shadow-md border border-outline-variant/30 p-8 text-center mx-auto shrink-0 min-w-[300px]">
       <div className="flex justify-center mb-6">
         <Image
           src="/web-app-manifest-512x512.png"
@@ -34,13 +40,17 @@ export function VerifyUI({ success, message }: { success: boolean; message: stri
           height={48}
         />
       </div>
-      
+
       {success ? (
         <div>
           <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="material-symbols-outlined text-primary text-3xl">check_circle</span>
+            <span className="material-symbols-outlined text-primary text-3xl">
+              check_circle
+            </span>
           </div>
-          <h1 className="font-headline-md text-headline-md mb-2">Email Verified</h1>
+          <h1 className="font-headline-md text-headline-md mb-2 text-foreground">
+            Email Verified
+          </h1>
           <p className="text-on-surface-variant mb-6">{message}</p>
           <p className="text-on-surface-variant/70 text-sm mb-8">
             Redirecting to login in {countdown}s...
@@ -55,9 +65,13 @@ export function VerifyUI({ success, message }: { success: boolean; message: stri
       ) : (
         <div>
           <div className="w-16 h-16 bg-error/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="material-symbols-outlined text-error text-3xl">error</span>
+            <span className="material-symbols-outlined text-error text-3xl">
+              error
+            </span>
           </div>
-          <h1 className="font-headline-md text-headline-md mb-2">Verification Failed</h1>
+          <h1 className="font-headline-md text-headline-md mb-2">
+            Verification Failed
+          </h1>
           <p className="text-on-surface-variant mb-6">{message}</p>
           <p className="text-on-surface-variant/70 text-sm mb-8">
             Redirecting to login in {countdown}s...
