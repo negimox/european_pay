@@ -20,12 +20,14 @@ interface MyRegistrationsListProps {
   registrations: Registration[];
   onCancel: (eventId: string) => void;
   loading?: boolean;
+  actionLoading?: string | null;
 }
 
 export function MyRegistrationsList({
   registrations,
   onCancel,
   loading = false,
+  actionLoading = null,
 }: MyRegistrationsListProps) {
   if (loading) {
     return (
@@ -61,6 +63,7 @@ export function MyRegistrationsList({
           event={registration.event}
           isRegistered={true}
           onCancel={onCancel}
+          isActionLoading={actionLoading === registration.eventId}
         />
       ))}
     </div>

@@ -24,6 +24,7 @@ interface EventProps {
   onClick?: () => void;
   className?: string;
   onCancel?: (eventId: string) => void;
+  isActionLoading?: boolean;
 }
 
 export function EventCard({
@@ -32,6 +33,7 @@ export function EventCard({
   onClick,
   className,
   onCancel,
+  isActionLoading = false,
 }: EventProps) {
   const getRelativeTime = (dateStr: string) => {
     const eventDate = new Date(dateStr);
@@ -187,6 +189,31 @@ export function EventCard({
               {registrationsCount === 1 ? "attendee" : "attendees"}
             </span>
           </div>
+
+          {isRegistered && onCancel && (
+            <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCancel(event.id);
+                }}
+                disabled={isActionLoading}
+                className="w-full flex items-center justify-center gap-2 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isActionLoading ? (
+                  <span className="material-symbols-outlined text-[18px] animate-spin">
+                    progress_activity
+                  </span>
+                ) : (
+                  <span className="material-symbols-outlined text-[18px]">
+                    cancel
+                  </span>
+                )}
+                {isActionLoading ? "Cancelling..." : "Cancel Registration"}
+              </button>
+            </div>
+          )}
         </CardContent>
       </div>
     </Card>

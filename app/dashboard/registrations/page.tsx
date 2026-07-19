@@ -62,6 +62,7 @@ export default function RegistrationsPage() {
         registrations={registrations}
         loading={loadingRegistrations}
         onCancel={handleCancelRegistration}
+        actionLoading={actionLoading}
       />
     </main>
   );
