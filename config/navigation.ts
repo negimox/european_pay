@@ -6,17 +6,57 @@ export type NavItem = {
 };
 
 export const ADMIN_NAV_ITEMS: NavItem[] = [
-  { name: "Dashboard", mobileName: "Dashboard", href: "/dashboard/admin", icon: "dashboard" },
-  { name: "Manage Events", mobileName: "Events", href: "/dashboard/admin/events", icon: "event" },
-  { name: "Manage Announcements", mobileName: "Notices", href: "/dashboard/admin/announcements", icon: "campaign" },
+  {
+    name: "Dashboard",
+    mobileName: "Dashboard",
+    href: "/dashboard/admin",
+    icon: "dashboard",
+  },
+  {
+    name: "Manage Events",
+    mobileName: "Events",
+    href: "/dashboard/admin/events",
+    icon: "event",
+  },
+  {
+    name: "Manage Announcements",
+    mobileName: "Notices",
+    href: "/dashboard/admin/announcements",
+    icon: "campaign",
+  },
 ];
 
 export const USER_NAV_ITEMS: NavItem[] = [
-  { name: "Dashboard", mobileName: "Home", href: "/dashboard", icon: "dashboard" },
-  { name: "Events", mobileName: "Events", href: "/dashboard/events", icon: "event" },
-  { name: "My Registrations", mobileName: "My Events", href: "/dashboard/registrations", icon: "how_to_reg" },
-  { name: "Calendar View", mobileName: "Calendar", href: "/dashboard/calendar", icon: "calendar_month" },
-  { name: "Announcements", mobileName: "Notices", href: "/dashboard/announcements", icon: "campaign" },
+  {
+    name: "Dashboard",
+    mobileName: "Home",
+    href: "/dashboard",
+    icon: "dashboard",
+  },
+  {
+    name: "Events",
+    mobileName: "Events",
+    href: "/dashboard/events",
+    icon: "event",
+  },
+  {
+    name: "My Events",
+    mobileName: "My Events",
+    href: "/dashboard/registrations",
+    icon: "how_to_reg",
+  },
+  {
+    name: "Calendar",
+    mobileName: "Calendar",
+    href: "/dashboard/calendar",
+    icon: "calendar_month",
+  },
+  {
+    name: "Announcements",
+    mobileName: "Notices",
+    href: "/dashboard/announcements",
+    icon: "campaign",
+  },
 ];
 
 export const ALL_NAV_ITEMS: NavItem[] = [...ADMIN_NAV_ITEMS, ...USER_NAV_ITEMS];
