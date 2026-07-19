@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { cn } from "@/lib/utils";
+import { ShareModal } from "@/app/components/events/ShareModal";
 
 interface EventProps {
   event: {
@@ -81,17 +82,21 @@ export function EventCard({
           )}
         </AspectRatio>
 
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            // Optional: Implement share logic here
-          }}
-          className="absolute top-3 right-3 w-[34px] h-[34px] rounded-full bg-black/40 flex items-center justify-center hover:bg-black/60 transition-colors backdrop-blur-md z-10"
+        <div 
+          onClick={(e) => e.stopPropagation()} 
+          className="absolute top-3 right-3 z-10"
         >
-          <span className="material-symbols-outlined text-white text-[20px] ml-[1px]">
-            ios_share
-          </span>
-        </button>
+          <ShareModal eventId={event.id}>
+            <button
+              type="button"
+              className="w-[34px] h-[34px] rounded-full bg-black/40 flex items-center justify-center hover:bg-black/60 transition-colors backdrop-blur-md"
+            >
+              <span className="material-symbols-outlined text-white text-[20px] ml-[1px]">
+                ios_share
+              </span>
+            </button>
+          </ShareModal>
+        </div>
 
         {isRegistered && (
           <div className="absolute top-3 left-3 z-10">

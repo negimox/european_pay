@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { LinkBreadcrumb } from "@/app/components/dashboard/LinkBreadcrumb";
 import { EventCard } from "@/app/components/dashboard/EventCard";
+import { ShareModal } from "@/app/components/events/ShareModal";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -358,15 +359,17 @@ export default function EventDetailsPage({
                   favorite
                 </span>
               </Button>
-              <Button
-                variant="secondary"
-                size="icon"
-                className="rounded-full h-10 w-10 text-on-surface-variant bg-surface-container-highest hover:bg-surface-container-high"
-              >
-                <span className="material-symbols-outlined text-[20px]">
-                  ios_share
-                </span>
-              </Button>
+              <ShareModal eventId={resolvedParams.id}>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="rounded-full h-10 w-10 text-on-surface-variant bg-surface-container-highest hover:bg-surface-container-high"
+                >
+                  <span className="material-symbols-outlined text-[20px]">
+                    ios_share
+                  </span>
+                </Button>
+              </ShareModal>
             </div>
 
             {!isRegistered ? (
