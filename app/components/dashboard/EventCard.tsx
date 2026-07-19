@@ -64,7 +64,9 @@ export function EventCard({
     return "";
   };
 
-  const isDeadlinePassed = event.registrationDeadline ? new Date(event.registrationDeadline) < new Date() : false;
+  const isDeadlinePassed = event.registrationDeadline
+    ? new Date(event.registrationDeadline) < new Date()
+    : false;
 
   const registrationsCount = event._count?.registrations || 0;
 
@@ -177,11 +179,24 @@ export function EventCard({
             </div>
 
             <div className="truncate flex items-center">
-              <span className={cn("material-symbols-outlined pr-2.5", event.category ? CATEGORY_COLORS[event.category] : "")}>
-                {event.category ? CATEGORY_ICONS[event.category] || "category" : "category"}
+              <span
+                className={cn(
+                  "material-symbols-outlined pr-2.5",
+                  event.category ? CATEGORY_COLORS[event.category] : "",
+                )}
+              >
+                {event.category
+                  ? CATEGORY_ICONS[event.category] || "category"
+                  : "category"}
               </span>{" "}
-              <span className={event.category ? CATEGORY_COLORS[event.category] : ""}>
-                {event.category ? CATEGORY_LABELS[event.category] || event.category : event.venue}
+              <span
+                className={
+                  event.category ? CATEGORY_COLORS[event.category] : ""
+                }
+              >
+                {event.category
+                  ? CATEGORY_LABELS[event.category] || event.category
+                  : event.venue}
               </span>
             </div>
           </div>

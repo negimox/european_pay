@@ -109,7 +109,7 @@ export default function EventDetailsPage({
           {/* Left Column */}
           <div className="lg:col-span-7 flex flex-col gap-10 order-2 lg:order-1">
             <Skeleton className="hidden lg:block h-12 w-3/4" />
-            
+
             <div>
               <Skeleton className="h-8 w-24 mb-6" />
               <div className="space-y-3">
@@ -133,10 +133,10 @@ export default function EventDetailsPage({
                 <Skeleton className="w-full h-full rounded-2xl" />
               </AspectRatio>
             </div>
-            
+
             <Card className="bg-surface-container-lowest border border-outline-variant rounded-[20px] p-2">
               <CardContent className="p-4 space-y-6">
-                {[1, 2, 3].map(i => (
+                {[1, 2, 3].map((i) => (
                   <div key={i} className="flex gap-4 items-start">
                     <Skeleton className="h-10 w-10 rounded-xl shrink-0" />
                     <div className="mt-0.5 space-y-2 flex-1">
@@ -349,9 +349,21 @@ export default function EventDetailsPage({
                 </div>
 
                 <div className="flex gap-4 items-start">
-                  <div className={cn("p-2.5 rounded-xl flex items-center justify-center shrink-0", event.category ? CATEGORY_BG_COLORS[event.category] || "bg-gray-500/10" : "bg-gray-500/10", event.category ? CATEGORY_COLORS[event.category] : "text-gray-500")}>
+                  <div
+                    className={cn(
+                      "p-2.5 rounded-xl flex items-center justify-center shrink-0",
+                      event.category
+                        ? CATEGORY_BG_COLORS[event.category] || "bg-gray-500/10"
+                        : "bg-gray-500/10",
+                      event.category
+                        ? CATEGORY_COLORS[event.category]
+                        : "text-gray-500",
+                    )}
+                  >
                     <span className="material-symbols-outlined text-xl">
-                      {event.category ? CATEGORY_ICONS[event.category] || "category" : "category"}
+                      {event.category
+                        ? CATEGORY_ICONS[event.category] || "category"
+                        : "category"}
                     </span>
                   </div>
                   <div className="mt-0.5">
@@ -359,7 +371,9 @@ export default function EventDetailsPage({
                       Category
                     </h3>
                     <p className="text-xs text-on-surface-variant mt-1">
-                      {event.category ? CATEGORY_LABELS[event.category] || event.category : "Event"}
+                      {event.category
+                        ? CATEGORY_LABELS[event.category] || event.category
+                        : "Event"}
                     </p>
                   </div>
                 </div>
@@ -425,15 +439,7 @@ export default function EventDetailsPage({
               <span className="inline-flex items-center rounded-full border border-outline-variant bg-surface-container-lowest px-3 py-1.5 text-xs font-semibold text-on-surface mr-1">
                 Free
               </span>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full h-10 w-10 text-on-surface-variant hover:text-red-500 hover:bg-red-50"
-              >
-                <span className="material-symbols-outlined text-[20px]">
-                  favorite
-                </span>
-              </Button>
+
               <ShareModal eventId={resolvedParams.id}>
                 <Button
                   variant="secondary"
@@ -452,10 +458,16 @@ export default function EventDetailsPage({
                 onClick={() =>
                   router.push(`/dashboard/events/${resolvedParams.id}/register`)
                 }
-                disabled={isFull || new Date(event.registrationDeadline) < new Date()}
+                disabled={
+                  isFull || new Date(event.registrationDeadline) < new Date()
+                }
                 className="rounded-xl px-8 py-6 text-[15px] font-bold shadow-md"
               >
-                {new Date(event.registrationDeadline) < new Date() ? "Deadline Passed" : isFull ? "Event Full" : "Register"}
+                {new Date(event.registrationDeadline) < new Date()
+                  ? "Deadline Passed"
+                  : isFull
+                    ? "Event Full"
+                    : "Register"}
               </Button>
             ) : (
               <Button
