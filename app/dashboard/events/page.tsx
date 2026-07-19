@@ -28,52 +28,12 @@ import { cn } from "@/lib/utils";
 import { LinkBreadcrumb } from "@/app/components/dashboard/LinkBreadcrumb";
 import { EventCard } from "@/app/components/dashboard/EventCard";
 
-// Matches the EventCategory enum in schema.prisma
-const EVENT_CATEGORIES = [
-  "ACADEMIC",
-  "CULTURAL",
-  "SPORTS",
-  "TECHNICAL",
-  "WORKSHOP",
-  "SOCIAL",
-  "OTHER",
-] as const;
-
-// Nicely formatted labels for display
-const CATEGORY_LABELS: Record<string, string> = {
-  ALL: "All events",
-  ACADEMIC: "Academic",
-  CULTURAL: "Cultural",
-  SPORTS: "Sports",
-  TECHNICAL: "Technical",
-  WORKSHOP: "Workshop",
-  SOCIAL: "Social",
-  OTHER: "Other",
-};
-
-// Material icons for each category
-const CATEGORY_ICONS: Record<string, string> = {
-  ALL: "campaign",
-  ACADEMIC: "school",
-  CULTURAL: "palette",
-  SPORTS: "sports_basketball",
-  TECHNICAL: "computer",
-  WORKSHOP: "build",
-  SOCIAL: "groups",
-  OTHER: "category",
-};
-
-// Colors for each category icon
-const CATEGORY_COLORS: Record<string, string> = {
-  ALL: "text-blue-500",
-  ACADEMIC: "text-indigo-500",
-  CULTURAL: "text-pink-500",
-  SPORTS: "text-orange-500",
-  TECHNICAL: "text-emerald-500",
-  WORKSHOP: "text-amber-500",
-  SOCIAL: "text-purple-500",
-  OTHER: "text-slate-500",
-};
+import {
+  EVENT_CATEGORIES,
+  CATEGORY_LABELS,
+  CATEGORY_ICONS,
+  CATEGORY_COLORS,
+} from "@/config/categories";
 
 export default function EventsPage() {
   const router = useRouter();

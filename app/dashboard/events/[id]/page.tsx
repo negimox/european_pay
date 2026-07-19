@@ -13,6 +13,13 @@ import { EventCard } from "@/app/components/dashboard/EventCard";
 import { ShareModal } from "@/app/components/events/ShareModal";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
+import {
+  CATEGORY_LABELS,
+  CATEGORY_ICONS,
+  CATEGORY_COLORS,
+  CATEGORY_BG_COLORS,
+} from "@/config/categories";
 
 // Dynamically import the map to avoid SSR issues with Leaflet
 const EventMap = dynamic(() => import("@/app/components/events/EventMap"), {
@@ -337,6 +344,22 @@ export default function EventDetailsPage({
                       event.venue.toLowerCase().includes("zoom")
                         ? "Virtual"
                         : "In-Person"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4 items-start">
+                  <div className={cn("p-2.5 rounded-xl flex items-center justify-center shrink-0", event.category ? CATEGORY_BG_COLORS[event.category] || "bg-gray-500/10" : "bg-gray-500/10", event.category ? CATEGORY_COLORS[event.category] : "text-gray-500")}>
+                    <span className="material-symbols-outlined text-xl">
+                      {event.category ? CATEGORY_ICONS[event.category] || "category" : "category"}
+                    </span>
+                  </div>
+                  <div className="mt-0.5">
+                    <h3 className="font-semibold text-on-surface text-sm">
+                      Category
+                    </h3>
+                    <p className="text-xs text-on-surface-variant mt-1">
+                      {event.category ? CATEGORY_LABELS[event.category] || event.category : "Event"}
                     </p>
                   </div>
                 </div>
