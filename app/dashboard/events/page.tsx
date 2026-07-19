@@ -62,6 +62,18 @@ const CATEGORY_ICONS: Record<string, string> = {
   OTHER: "category",
 };
 
+// Colors for each category icon
+const CATEGORY_COLORS: Record<string, string> = {
+  ALL: "text-blue-500",
+  ACADEMIC: "text-indigo-500",
+  CULTURAL: "text-pink-500",
+  SPORTS: "text-orange-500",
+  TECHNICAL: "text-emerald-500",
+  WORKSHOP: "text-amber-500",
+  SOCIAL: "text-purple-500",
+  OTHER: "text-slate-500",
+};
+
 export default function EventsPage() {
   const router = useRouter();
   const [events, setEvents] = useState<any[]>([]);
@@ -270,7 +282,7 @@ export default function EventsPage() {
                         : "border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
                     )}
                   >
-                    <span className="material-symbols-outlined text-[24px]">
+                    <span className={cn("material-symbols-outlined text-[24px]", CATEGORY_COLORS[cat])}>
                       {CATEGORY_ICONS[cat]}
                     </span>
                     <span className="text-[13.5px] font-medium">
