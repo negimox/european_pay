@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   Popover,
@@ -303,10 +304,19 @@ export default function EventsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-md">
             {loading ? (
               [...Array(8)].map((_, i) => (
-                <div
-                  key={i}
-                  className="rounded-2xl bg-surface-container-low h-[320px] animate-pulse w-full"
-                />
+                <div key={i} className="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden flex flex-col h-[320px]">
+                  <Skeleton className="h-40 w-full rounded-none" />
+                  <div className="p-4 flex flex-col gap-4 flex-1">
+                    <div className="flex gap-2">
+                      <Skeleton className="h-6 w-16 rounded-full" />
+                    </div>
+                    <Skeleton className="h-6 w-3/4" />
+                    <div className="mt-auto space-y-2">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-2/3" />
+                    </div>
+                  </div>
+                </div>
               ))
             ) : filteredEvents.length === 0 ? (
               <div className="col-span-full flex flex-col items-center justify-center py-16 gap-4 text-on-surface-variant">

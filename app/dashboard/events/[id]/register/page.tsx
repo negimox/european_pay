@@ -158,10 +158,66 @@ export default function RegisterEventPage({
   if (eventLoading) {
     return (
       <main className="flex-1 w-full max-w-7xl mx-auto py-lg px-margin-mobile md:px-margin-desktop lg:px-gutter">
-        <div className="h-5 w-48 rounded bg-surface-container animate-pulse mb-lg" />
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
-          <div className="lg:col-span-4 h-80 rounded-xl bg-surface-container animate-pulse" />
-          <div className="lg:col-span-8 h-96 rounded-xl bg-surface-container animate-pulse" />
+        <Skeleton className="h-5 w-48 mb-6" />
+        <Skeleton className="h-5 w-32 mb-xl" />
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+          <aside className="lg:col-span-4">
+            <Card className="bg-surface-container-low border-outline-variant overflow-hidden">
+              <div className="h-1 w-full bg-surface-container-high" />
+              <CardHeader className="pb-2 pt-md px-md">
+                <Skeleton className="h-6 w-32 mb-sm" />
+                <Skeleton className="h-8 w-full" />
+              </CardHeader>
+              <CardContent className="px-md pb-md flex flex-col gap-md">
+                <div className="flex flex-col gap-4">
+                  <div className="flex gap-3">
+                    <Skeleton className="h-6 w-6 rounded-full" />
+                    <div className="space-y-2 flex-1">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-3 w-3/4" />
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <Skeleton className="h-6 w-6 rounded-full" />
+                    <Skeleton className="h-4 w-full mt-1" />
+                  </div>
+                </div>
+                <div className="pt-sm border-t border-outline-variant space-y-3">
+                  <div className="flex justify-between">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-4 w-12" />
+                  </div>
+                  <Skeleton className="h-1.5 w-full" />
+                </div>
+                <Skeleton className="h-16 w-full rounded-lg" />
+              </CardContent>
+            </Card>
+          </aside>
+
+          <section className="lg:col-span-8">
+            <Card className="bg-surface-container-lowest border-outline-variant">
+              <CardHeader className="border-b border-outline-variant pb-md">
+                <Skeleton className="h-8 w-48 mb-2" />
+                <Skeleton className="h-4 w-3/4" />
+              </CardHeader>
+              <CardContent className="pt-lg flex flex-col gap-lg">
+                <Skeleton className="h-28 w-full rounded-lg" />
+                <hr className="border-outline-variant" />
+                <div className="space-y-2">
+                  <Skeleton className="h-5 w-32" />
+                  <Skeleton className="h-10 w-full rounded-md" />
+                </div>
+                <div className="space-y-2">
+                  <Skeleton className="h-5 w-40" />
+                  <Skeleton className="h-10 w-full rounded-md" />
+                </div>
+                <div className="pt-sm border-t border-outline-variant">
+                  <Skeleton className="h-12 w-48 rounded-md" />
+                </div>
+              </CardContent>
+            </Card>
+          </section>
         </div>
       </main>
     );

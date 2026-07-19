@@ -34,12 +34,18 @@ export function ShareModal({ eventId, children }: ShareModalProps) {
   const handleShareX = () => {
     const text = encodeURIComponent("Check out this event!");
     const url = encodeURIComponent(shareUrl);
-    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
+    window.open(
+      `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+      "_blank",
+    );
   };
 
   const handleShareLinkedIn = () => {
     const url = encodeURIComponent(shareUrl);
-    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, "_blank");
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
+      "_blank",
+    );
   };
 
   return (

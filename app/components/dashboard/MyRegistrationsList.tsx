@@ -1,4 +1,5 @@
 import { EventCard } from "./EventCard";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Registration {
   id: string;
@@ -33,7 +34,19 @@ export function MyRegistrationsList({
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="animate-pulse bg-surface-container-low rounded-xl h-[380px] w-full" />
+          <div key={i} className="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden flex flex-col h-[320px] w-full">
+            <Skeleton className="h-[140px] w-full rounded-none" />
+            <div className="p-4 flex flex-col gap-4 flex-1">
+              <div className="flex gap-2">
+                <Skeleton className="h-6 w-16 rounded-full" />
+              </div>
+              <Skeleton className="h-6 w-3/4" />
+              <div className="mt-auto space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-2/3" />
+              </div>
+            </div>
+          </div>
         ))}
       </div>
     );
